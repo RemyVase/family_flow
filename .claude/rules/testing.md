@@ -7,8 +7,8 @@ after.
 ## Structure
 
 - Tests live in `test/`, **mirroring `lib/`**:
-  `lib/features/user/controllers/home_controller.dart` →
-  `test/features/user/controllers/home_controller_test.dart`.
+  `lib/features/home/views/home/home_controller.dart` →
+  `test/features/home/views/home/home_controller_test.dart`.
 
 ## What to test, by layer
 

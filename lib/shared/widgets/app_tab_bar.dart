@@ -51,7 +51,10 @@ class AppTabBar extends StatelessWidget {
             onTap: () => onTabSelected(1),
           ),
           Expanded(
+            // heightFactor keeps the Center from expanding vertically and
+            // inflating the whole bar to full screen height.
             child: Center(
+              heightFactor: 1,
               child: GestureDetector(
                 onTap: onCreatePressed,
                 child: Container(

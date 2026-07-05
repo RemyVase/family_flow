@@ -5,7 +5,7 @@ logic — every view has its own controller.**
 
 ## The controller
 
-- A `ChangeNotifier`, one per view, in `lib/features/<feature>/controllers/`.
+- A `ChangeNotifier`, one per view, next to it in `lib/features/<feature>/views/<view>/<view>_controller.dart`.
 - It holds **all of the view's state** (data, loading state, errors…).
 - It exposes that state through getters and calls `notifyListeners()` when it
   changes.

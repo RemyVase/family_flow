@@ -34,6 +34,7 @@ Architecture conventions are non-negotiable. Read them before writing code:
 - @.claude/rules/theme.md — design tokens, no magic values
 - @.claude/rules/testing.md — per-feature test suites
 - @.claude/rules/linting.md — zero-warning policy
+- @.claude/rules/no-dead-code.md — delete unused files, classes and code
 
 ## Useful commands
 

@@ -16,12 +16,20 @@ lib/
 │   └── <feature>/
 │       ├── models/         # feature's Freezed models
 │       ├── repositories/   # Firestore / Storage / Auth calls ONLY
-│       ├── controllers/    # one controller per view (see state-management.md)
+│       ├── widgets/        # widgets shared by several views of the feature
 │       └── views/
-│           ├── <feature>_view.dart   # the view (no logic)
-│           └── widgets/              # sub-widgets split out from the view
+│           └── <view>/     # ONE FOLDER PER VIEW
+│               ├── <view>_view.dart        # the view (no logic)
+│               ├── <view>_controller.dart  # its controller (if the view has state)
+│               └── widgets/                # sub-widgets of THIS view only
 └── shared/                 # widgets / utils reused across features
 ```
+
+**One folder per view.** Everything a view needs lives together under
+`views/<view>/`: the view file, its controller, and a `widgets/` folder with
+its sub-widgets. A widget used by several views of the same feature moves up
+to the feature's `widgets/`; a widget used across features moves to
+`lib/shared/widgets/`.
 
 ## Layers and their responsibilities
 
@@ -36,8 +44,35 @@ View → Controller → Service → Repository → Firebase
 
 - **No display logic** in the view. None.
 - The view listens to its controller (`context.watch`) and only renders.
-- Every view is **split into widgets**, even widgets not reused elsewhere. We
-  want small, well-separated, clean files under `views/widgets/`.
+- Every view is **split into widgets**, even widgets not reused elsewhere.
+
+#### Views are a sequence of widgets (enforced)
+
+**Split into a maximum of widgets, but don't inflate the file count.** The
+two rules work together:
+
+1. **The view is only a sequence of widgets.** The `<view>_view.dart` build
+   methods never inline a visual section: no `Container`+decoration blocks,
+   no `Row`/`Column` describing a card's innards, directly in the view or
+   its `_Body`. Every named section of the screen (header, card, list, row,
+   button block…) is a widget class.
+2. **Where that widget class lives depends on its weight:**
+   - **Small and dumb** (pure layout, a handful of lines, no logic, no
+     controller access) → a **private class** (`_Foo`) at the bottom of the
+     view file. Don't create a file for it.
+   - **Big or complex** (long build, internal state, reads a controller /
+     service, conditional rendering, animations) → its **own file** in the
+     view's `widgets/` folder.
+
+Rules of thumb:
+
+- If the widget talks to a controller (`context.watch` / `context.read`),
+  it goes to its own file.
+- If the widget's build is longer than ~40 lines or has private sub-widgets
+  of its own, it goes to its own file.
+- Otherwise, keep it private in the view file — fewer files beats ceremony.
+- Same logic applies inside `widgets/` files: a big sub-part gets its own
+  file, a tiny private helper stays where it is used.
 
 ### Controller
 
