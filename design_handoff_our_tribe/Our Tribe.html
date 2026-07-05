@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Our Tribe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tribe/hi-fi-t.css?v=1" />
+<style>
+  html, body { margin: 0; height: 100%; }
+  body{
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 40px 20px;
+    background: #EDEAE3;
+    font-family: "Figtree", system-ui, sans-serif;
+  }
+  #root{ display:flex; align-items:center; justify-content:center; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<template id="__bundler_thumbnail" data-bg-color="#EDEAE3">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="#EDEAE3"/>
+  <rect x="34" y="20" width="32" height="60" rx="7" fill="#fff" stroke="#2F6D4E" stroke-width="2.5"/>
+  <rect x="41" y="34" width="7" height="7" rx="2" fill="#2F6D4E"/><rect x="51" y="36" width="11" height="3.5" rx="1.7" fill="#E4DFD3"/>
+  <rect x="41" y="46" width="7" height="7" rx="2" fill="#DAD3C4"/><rect x="51" y="48" width="11" height="3.5" rx="1.7" fill="#E4DFD3"/>
+  <rect x="41" y="58" width="7" height="7" rx="2" fill="#DAD3C4"/><rect x="51" y="60" width="11" height="3.5" rx="1.7" fill="#E4DFD3"/>
+</svg>
+</template>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="tribe/hifi-home.jsx"></script>
+<script type="text/babel" src="hifi-week.jsx"></script>
+<script type="text/babel" src="tribe/hifi-recap.jsx"></script>
+<script type="text/babel" src="hifi-detail.jsx"></script>
+<script type="text/babel" src="tribe/hifi-create.jsx"></script>
+<script type="text/babel" src="hifi-tasks.jsx"></script>
+<script type="text/babel" src="tribe/hifi-profile.jsx"></script>
+<script type="text/babel" src="tribe/hifi-settings.jsx"></script>
+
+<script type="text/babel">
+const TW_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "#2F6D4E",
+  "radius": 15,
+  "showProgress": true,
+  "motif": true
+}/*EDITMODE-END*/;
+
+function App() {
+  const [tw, setTweak] = useTweaks(TW_DEFAULTS);
+  React.useEffect(() => {
+    document.documentElement.classList.toggle('no-motif', !tw.motif);
+  }, [tw.motif]);
+  const [tab, setTab] = React.useState('home');
+  const [homeTasks, setHomeTasks] = React.useState(() => window.TASKS0);
+  const [weekTasks, setWeekTasks] = React.useState(() => window.WK_TASKS);
+  const [detail, setDetail] = React.useState(null); // { source: 'home'|'week', id }
+  const [creating, setCreating] = React.useState(false);
+  const [setting, setSetting] = React.useState(null); // 'rewards' | 'reminders'
+  const [memberColors, setMemberColors] = React.useState({ lea: '#C25A38', papa: '#3E6AA6', maman: '#2E8461', tom: '#6C57A6' });
+  const cvars = buildColorVars(memberColors);
+  const setMemberColor = (id, hex) => setMemberColors((mc) => ({ ...mc, [id]: hex }));
+
+  const toggleHome = (id) => setHomeTasks((ts) => ts.map((t) => t.id === id ? { ...t, done: !t.done } : t));
+  const toggleWeek = (id) => setWeekTasks((ts) => ts.map((t) => t.id === id ? { ...t, done: !t.done } : t));
+
+  const addTask = (task) => { setHomeTasks((ts) => [...ts, task]); setCreating(false); setDetail(null); setTab('home'); };
+
+  const openHome = (t) => setDetail({ source: 'home', id: t.id });
+  const openWeek = (t) => setDetail({ source: 'week', id: t.id });
+
+  const nav = (k) => {
+    if (k === 'add') { setDetail(null); setSetting(null); setCreating(true); return; }
+    if (k === 'home' || k === 'pts' || k === 'week' || k === 'profile') { setDetail(null); setCreating(false); setSetting(null); setTab(k); }
+  };
+
+  const detailTask = detail && (detail.source === 'home'
+    ? homeTasks.find((t) => t.id === detail.id)
+    : weekTasks.find((t) => t.id === detail.id));
+  const detailToggle = detail && (detail.source === 'home' ? toggleHome : toggleWeek);
+
+  let screen;
+  if (creating) {
+    screen = <CreateTask tw={tw} cvars={cvars} onClose={() => setCreating(false)} onCreate={addTask} />;
+  } else if (setting === 'rewards') {
+    screen = <Rewards tw={tw} cvars={cvars} onBack={() => setSetting(null)} />;
+  } else if (setting === 'reminders') {
+    screen = <Reminders tw={tw} cvars={cvars} onBack={() => setSetting(null)} />;
+  } else if (detail && detailTask) {
+    screen = <TaskDetail task={detailTask} cvars={cvars} onBack={() => setDetail(null)} onToggle={detailToggle} />;
+  } else if (tab === 'profile') {
+    screen = <Profile tw={tw} cvars={cvars} onNav={nav} memberColors={memberColors} onSetColor={setMemberColor} onOpenSetting={(k) => { if (k === 'rewards' || k === 'reminders') setSetting(k); }} />;
+  } else if (tab === 'pts') {
+    screen = <Recap tw={tw} cvars={cvars} onNav={nav} tasks={weekTasks} onToggle={toggleWeek} onOpen={openWeek} />;
+  } else if (tab === 'week') {
+    screen = <Week tw={tw} cvars={cvars} onNav={nav} tasks={weekTasks} onToggle={toggleWeek} onOpen={openWeek} />;
+  } else {
+    screen = <Home tw={tw} cvars={cvars} onNav={nav} tasks={homeTasks} onToggle={toggleHome} onOpen={openHome} onProfile={() => nav('profile')} />;
+  }
+
+  return (
+    <React.Fragment>
+      <IOSDevice>
+        {screen}
+      </IOSDevice>
+
+      <TweaksPanel>
+        <TweakSection label="Couleur d’accent" />
+        <TweakColor label="Accent de l’app"
+          value={tw.accent}
+          options={['#2F6D4E', '#B4654A', '#4F6D97', '#9C7C43']}
+          onChange={(v) => setTweak('accent', v)} />
+        <TweakSection label="Style" />
+        <TweakSlider label="Arrondi des cartes" min={8} max={20} step={1} value={tw.radius} onChange={(v) => setTweak('radius', v)} />
+        <TweakToggle label="Motif de fond" value={tw.motif} onChange={(v) => setTweak('motif', v)} />
+        <TweakToggle label="Carte de progression" value={tw.showProgress} onChange={(v) => setTweak('showProgress', v)} />
+      </TweaksPanel>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

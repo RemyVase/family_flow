@@ -1,8 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
-
-import '../config/app_environment.dart';
-import '../firebase_options_dev.dart' as dev;
-import '../firebase_options_prod.dart' as prod;
+import 'package:our_tribe/config/app_environment.dart';
+import 'package:our_tribe/firebase_options_dev.dart' as dev;
+import 'package:our_tribe/firebase_options_prod.dart' as prod;
 
 /// Initializes Firebase with the options matching [env].
 ///

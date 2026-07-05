@@ -1,74 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:our_tribe/config/app_environment.dart';
+import 'package:our_tribe/l10n/app_localizations.dart';
+import 'package:our_tribe/routing/app_router.dart';
+import 'package:our_tribe/services/tribe_service.dart';
+import 'package:our_tribe/shared/widgets/dev_banner.dart';
+import 'package:our_tribe/theme/app_theme.dart';
+import 'package:provider/provider.dart';
 
-import 'config/app_environment.dart';
-import 'widgets/dev_banner.dart';
-
-class FamilyFlowApp extends StatelessWidget {
-  const FamilyFlowApp({super.key});
+class OurTribeApp extends StatelessWidget {
+  const OurTribeApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     final config = AppConfig.instance;
 
-    return MaterialApp(
-      title: config.appName,
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      // Le bandeau dev est ajouté ici pour rester visible sur tous les écrans.
-      builder: (context, child) {
-        return DevBanner(
-          enabled: config.isDev,
-          child: child ?? const SizedBox.shrink(),
-        );
-      },
-      home: const MyHomePage(title: 'Our Tribe'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    return MultiProvider(
+      providers: [
+        // Cross-feature services. Repositories will be bound to their
+        // interfaces here once the backend is wired.
+        ChangeNotifierProvider<TribeService>(create: (_) => TribeService()),
+      ],
+      child: MaterialApp.router(
+        title: config.appName,
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light(),
+        routerConfig: appRouter,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        // The dev strip is added here so it stays visible on every screen.
+        builder: (context, child) {
+          return DevBanner(
+            enabled: config.isDev,
+            child: child ?? const SizedBox.shrink(),
+          );
+        },
       ),
     );
   }

@@ -1,5 +1,5 @@
-import 'bootstrap.dart';
-import 'config/app_environment.dart';
+import 'package:our_tribe/bootstrap.dart';
+import 'package:our_tribe/config/app_environment.dart';
 
-/// Point d'entrée pour l'environnement de développement.
+/// Entry point for the development environment.
 void main() => bootstrap(Environment.dev);

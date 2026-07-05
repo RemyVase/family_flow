@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Our Tribe — Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="tribe/hi-fi-t.css?v=1" />
+<style>
+  html, body { margin: 0; height: 100%; }
+  body{
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 40px 20px;
+    background: #EDEAE3;
+    font-family: "Figtree", system-ui, sans-serif;
+  }
+  #root{ display:flex; align-items:center; justify-content:center; }
+
+  /* ---- onboarding-specific (identité Our Tribe / Calme) ---- */
+  .ob-title{ font-family:"Figtree",system-ui,sans-serif; font-weight:700; font-size:25px; line-height:1.1; letter-spacing:-.02em; color:var(--ink); margin:0; }
+  .ob-sub{ font-family:"Figtree",system-ui,sans-serif; font-weight:500; font-size:14.5px; color:var(--ink-2); margin:7px 0 22px; line-height:1.45; }
+
+  /* welcome / done */
+  .ob-welcome{ text-align:center; display:flex; flex-direction:column; align-items:center; }
+  .ob-logo{ width:78px; height:78px; display:flex; align-items:center; justify-content:center; color:#fff;
+    clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%); }
+  .ob-logo-mono{ font-family:"Figtree",system-ui,sans-serif; font-weight:800; font-size:26px; letter-spacing:.02em; }
+  .ob-brand{ font-family:"Figtree",system-ui,sans-serif; font-weight:800; font-size:30px; letter-spacing:-.02em; color:var(--ink); margin:22px 0 0; }
+  .ob-tag{ font-family:"Figtree",system-ui,sans-serif; font-weight:500; font-size:15px; color:var(--ink-2); margin:10px 0 0; line-height:1.5; }
+  .ob-cluster{ display:flex; margin-top:30px; }
+  .ob-cl-ava{ width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff;
+    font-family:"Figtree",system-ui,sans-serif; font-weight:700; font-size:18px; border:3px solid var(--bg); }
+
+  /* footer button column */
+  .ob-foot-col{ display:flex; flex-direction:column; gap:6px; align-items:center; }
+  .ob-link{ background:none; border:none; cursor:pointer; padding:8px; font-family:"Figtree",system-ui,sans-serif; font-weight:600; font-size:14px; color:var(--ink-2); }
+
+  /* note */
+  .ob-note{ display:flex; align-items:flex-start; gap:8px; margin-top:6px; padding:12px 13px; border-radius:12px;
+    background:var(--surface); border:1px solid var(--line); box-shadow:none;
+    font-family:"Figtree",system-ui,sans-serif; font-weight:500; font-size:12.5px; color:var(--ink-2); line-height:1.45; }
+  .ob-note svg{ flex:0 0 auto; margin-top:1px; }
+
+  /* choice cards */
+  .ob-choice{ display:flex; align-items:center; gap:13px; width:100%; text-align:left; cursor:pointer; margin-bottom:11px;
+    background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:15px; box-shadow:none; }
+  .ob-choice-ic{ width:46px; height:46px; border-radius:13px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; }
+  .ob-choice-ic svg{ width:23px; height:23px; }
+  .ob-choice-txt{ flex:1; display:flex; flex-direction:column; gap:2px; }
+  .ob-choice-t{ font-family:"Figtree",system-ui,sans-serif; font-weight:700; font-size:16px; letter-spacing:-.01em; color:var(--ink); }
+  .ob-choice-d{ font-family:"Figtree",system-ui,sans-serif; font-weight:500; font-size:12.5px; color:var(--ink-3); }
+
+  /* swatches */
+  .ob-swatches{ display:flex; flex-wrap:wrap; gap:11px; }
+
+  /* invite */
+  .ob-badge{ display:inline-block; font-family:"Figtree",system-ui,sans-serif; font-weight:700; font-size:12px; letter-spacing:.02em; padding:6px 12px; border-radius:9px; margin-bottom:14px; }
+  .ob-code-card{ border:1px solid; border-radius:18px; padding:20px; text-align:center; box-shadow:none; margin-bottom:14px; }
+  .ob-code-l{ font-family:"Figtree",system-ui,sans-serif; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--ink-3); }
+  .ob-code-v{ font-family:"Figtree",system-ui,sans-serif; font-weight:800; font-size:38px; letter-spacing:5px; line-height:1.1; margin:6px 0 16px; }
+  .ob-code-btns{ display:flex; gap:10px; }
+  .ob-code-btn{ flex:1; display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer;
+    background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:11px;
+    font-family:"Figtree",system-ui,sans-serif; font-weight:600; font-size:14px; color:var(--ink); }
+
+  /* join code inputs */
+  .ob-code-inputs{ display:flex; gap:9px; justify-content:space-between; }
+  .ob-cbox{ width:46px; height:56px; flex:1; text-align:center; border:1px solid var(--line); background:var(--surface); border-radius:13px;
+    font-family:"Figtree",system-ui,sans-serif; font-weight:700; font-size:24px; color:var(--ink); box-shadow:none; outline:none; }
+  .ob-cbox.filled{ background:#fff; }
+  .ob-found{ display:flex; align-items:center; gap:12px; margin-top:18px; border:1px solid; border-radius:15px; padding:13px 14px; }
+  .ob-found-ava{ width:40px; height:40px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center; justify-content:center; color:#fff;
+    font-family:"Figtree",system-ui,sans-serif; font-weight:700; font-size:17px; }
+  .ob-found-n{ font-family:"Figtree",system-ui,sans-serif; font-weight:700; font-size:16px; letter-spacing:-.01em; color:var(--ink); }
+  .ob-found-s{ font-family:"Figtree",system-ui,sans-serif; font-weight:500; font-size:12.5px; color:var(--ink-3); }
+  .ob-found-check{ width:26px; height:26px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center; justify-content:center; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<template id="__bundler_thumbnail" data-bg-color="#EDEAE3">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="#EDEAE3"/>
+  <path d="M38 26h24l12 21-12 21H38L26 47Z" fill="#2F6D4E"/>
+  <text x="50" y="54" text-anchor="middle" fill="#fff" font-family="sans-serif" font-weight="800" font-size="16">OT</text>
+  <circle cx="40" cy="80" r="5" fill="#C25A38"/><circle cx="50" cy="80" r="5" fill="#2E8461"/><circle cx="60" cy="80" r="5" fill="#3E6AA6"/>
+</svg>
+</template>
+
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="tribe/hifi-onboarding.jsx"></script>
+
+<script type="text/babel">
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <IOSDevice><Onboarding /></IOSDevice>
+);
+</script>
+</body>
+</html>

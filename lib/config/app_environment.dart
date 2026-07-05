@@ -8,10 +8,7 @@ enum Environment { dev, prod }
 /// Initialized once at startup via [AppConfig.init] (called by the
 /// `main_dev.dart` / `main_prod.dart` entry points).
 class AppConfig {
-  AppConfig._({
-    required this.environment,
-    required this.appName,
-  });
+  AppConfig._({required this.environment, required this.appName});
 
   final Environment environment;
   final String appName;

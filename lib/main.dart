@@ -1,11 +1,11 @@
-// Point d'entrée par défaut.
+// Default entry point.
 //
-// L'application possède deux points d'entrée dédiés :
-//   - lib/main_dev.dart  (environnement dev, avec bandeau vert)
-//   - lib/main_prod.dart (environnement prod)
+// The application has two dedicated entry points:
+//   - lib/main_dev.dart  (dev environment, with the green strip)
+//   - lib/main_prod.dart (prod environment)
 //
-// Par commodité, `flutter run` sans cible démarre en mode dev.
-// Utilise les configurations du launch.json ("Our Tribe (dev)" / "(prod)").
-import 'main_dev.dart' as dev;
+// For convenience, `flutter run` without a target starts in dev mode.
+// Use the launch.json configurations ("Our Tribe (dev)" / "(prod)").
+import 'package:our_tribe/main_dev.dart' as dev;
 
 void main() => dev.main();

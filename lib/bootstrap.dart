@@ -1,8 +1,7 @@
 import 'package:flutter/widgets.dart';
-
-import 'app.dart';
-import 'config/app_environment.dart';
-import 'firebase/firebase_bootstrap.dart';
+import 'package:our_tribe/app.dart';
+import 'package:our_tribe/config/app_environment.dart';
+import 'package:our_tribe/firebase/firebase_bootstrap.dart';
 
 /// Startup sequence shared by both environments.
 ///
@@ -11,5 +10,5 @@ Future<void> bootstrap(Environment env) async {
   WidgetsFlutterBinding.ensureInitialized();
   AppConfig.init(env);
   await initializeFirebase(env);
-  runApp(const FamilyFlowApp());
+  runApp(const OurTribeApp());
 }

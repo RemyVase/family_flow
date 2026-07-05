@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-/// Points d'accès centralisés aux services Firebase.
+/// Centralized access points to the Firebase services.
 ///
-/// Évite d'appeler `.instance` partout dans le code et facilite un futur
-/// remplacement par des fakes en test.
+/// Avoids calling `.instance` everywhere in the code and eases a future
+/// swap for fakes in tests.
 class FirebaseServices {
   FirebaseServices._();
 
