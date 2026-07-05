@@ -1,0 +1,59 @@
+rules_version = '2';
+
+// Our Tribe — Cloud Storage security rules.
+// Same philosophy as Firestore: default deny, scoped to owner/family,
+// validate content type and size on write. Family membership is read from
+// Firestore (Storage rules can query Firestore via `firestore.exists`).
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // -----------------------------------------------------------------
+    // Helpers
+    // -----------------------------------------------------------------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isFamilyMember(familyId) {
+      return isSignedIn()
+        && firestore.exists(/databases/(default)/documents/families/$(familyId)/members/$(request.auth.uid));
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    // request.resource is null on delete/read, so guard size checks to writes.
+    function isUnderSizeMb(maxMb) {
+      return request.resource.size < maxMb * 1024 * 1024;
+    }
+
+    // -----------------------------------------------------------------
+    // users/{userId}/... — a user's own files (e.g. avatar). Images ≤ 5 MB.
+    // -----------------------------------------------------------------
+    match /users/{userId}/{allPaths=**} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && isImage() && isUnderSizeMb(5);
+    }
+
+    // -----------------------------------------------------------------
+    // families/{familyId}/... — shared family files. Members only, images ≤ 10 MB.
+    // -----------------------------------------------------------------
+    match /families/{familyId}/{allPaths=**} {
+      allow read: if isFamilyMember(familyId);
+      allow write: if isFamilyMember(familyId) && isImage() && isUnderSizeMb(10);
+    }
+
+    // -----------------------------------------------------------------
+    // Default deny.
+    // -----------------------------------------------------------------
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

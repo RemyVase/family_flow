@@ -1,0 +1,80 @@
+rules_version = '2';
+
+// Our Tribe — Firestore security rules.
+// Philosophy (see .claude/rules/firestore-security.md):
+//   - Default deny: nothing is accessible unless explicitly allowed.
+//   - Data is scoped to its family: only members of a family can access it.
+//   - Least privilege + validation on write.
+// Every new collection MUST get its own match block here, in the same change.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // -----------------------------------------------------------------
+    // Helpers
+    // -----------------------------------------------------------------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Is the signed-in user a member of this family?
+    // Membership is a document in families/{familyId}/members keyed by uid.
+    function isFamilyMember(familyId) {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid));
+    }
+
+    // -----------------------------------------------------------------
+    // users/{userId} — a user's own profile document. Owner-only.
+    // -----------------------------------------------------------------
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create, update: if isOwner(userId);
+      allow delete: if false; // account deletion handled server-side
+    }
+
+    // -----------------------------------------------------------------
+    // families/{familyId} — the family and everything scoped to it.
+    // -----------------------------------------------------------------
+    match /families/{familyId} {
+      allow read: if isFamilyMember(familyId);
+      allow update, delete: if isFamilyMember(familyId);
+
+      // Creating a family: the creator must record themselves as owner.
+      // Becoming the FIRST member (bootstrap) and inviting others is a
+      // controlled flow — see the note in members/ below.
+      allow create: if isSignedIn()
+        && request.resource.data.ownerId == request.auth.uid;
+
+      // Membership documents (doc id == member uid).
+      // Reads are limited to members. Writes are intentionally denied to the
+      // client: adding/removing members must go through a controlled flow
+      // (invite token validated in rules, or a Cloud Function using the Admin
+      // SDK) so a user cannot self-join an arbitrary family. Design this with
+      // the data model, then replace `if false` with the scoped condition.
+      match /members/{memberId} {
+        allow read: if isFamilyMember(familyId);
+        allow write: if false; // TODO: gate via invite flow / Cloud Function
+      }
+
+      // Family-scoped tasks (example pattern from the project rule).
+      match /tasks/{taskId} {
+        allow read: if isFamilyMember(familyId);
+        allow create: if isFamilyMember(familyId)
+          && request.resource.data.familyId == familyId;
+        allow update, delete: if isFamilyMember(familyId);
+      }
+    }
+
+    // -----------------------------------------------------------------
+    // Default deny — anything not explicitly matched above is forbidden.
+    // -----------------------------------------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

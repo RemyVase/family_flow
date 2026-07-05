@@ -49,6 +49,9 @@ app.*.map.json
 .env.*
 !.env.example
 lib/**/secrets.dart
-# Firebase (dé-commenter si tu ajoutes Firebase et veux les garder privés)
-# **/google-services.json
-# **/GoogleService-Info.plist
+# Firebase — les fichiers de config client (google-services.json,
+# GoogleService-Info.plist, firebase_options*.dart) sont des identifiants
+# NON secrets : ils sont committés volontairement (position officielle Google).
+# La sécurité repose sur les Security Rules + App Check, pas sur leur secret.
+# NE JAMAIS committer : clés de service account (Admin SDK), FCM server keys,
+# clés Gemini/tierces.
