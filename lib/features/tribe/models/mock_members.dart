@@ -5,7 +5,7 @@ import 'package:our_tribe/theme/app_colors.dart';
 abstract final class MockMembers {
   static const String tribeName = 'La tribu Dubois';
   static const String inviteCode = '4KP-92Q';
-  static const String currentUserEmail = 'lea@famille.be';
+  static const String currentUserEmail = 'lea@ourtribe.be';
 
   static const List<Member> members = [
     Member(

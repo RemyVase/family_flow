@@ -680,6 +680,96 @@ abstract class AppLocalizations {
   /// **'Fait ! Annuler'**
   String get undoDoneButton;
 
+  /// No description provided for @attributionLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Attribution'**
+  String get attributionLabel;
+
+  /// No description provided for @assignPersonChip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une personne'**
+  String get assignPersonChip;
+
+  /// No description provided for @assignRotateChip.
+  ///
+  /// In fr, this message translates to:
+  /// **'À tour de rôle'**
+  String get assignRotateChip;
+
+  /// No description provided for @assignUnassignedChip.
+  ///
+  /// In fr, this message translates to:
+  /// **'À répartir'**
+  String get assignUnassignedChip;
+
+  /// No description provided for @assignUnassignedHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'La tâche ira dans « À répartir », chacun pourra la prendre.'**
+  String get assignUnassignedHint;
+
+  /// No description provided for @assignRotateHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'À chaque fois, la tribu choisit qui s\'en occupe.'**
+  String get assignRotateHint;
+
+  /// No description provided for @rotateBadge.
+  ///
+  /// In fr, this message translates to:
+  /// **'À tour de rôle'**
+  String get rotateBadge;
+
+  /// No description provided for @unassignedBannerTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, one{1 tâche à répartir} other{{count} tâches à répartir}}'**
+  String unassignedBannerTitle(int count);
+
+  /// No description provided for @unassignedBannerSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Personne n\'est encore assigné · appuie pour répartir'**
+  String get unassignedBannerSubtitle;
+
+  /// No description provided for @unassignedTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'À répartir'**
+  String get unassignedTitle;
+
+  /// No description provided for @unassignedSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ces tâches n\'ont pas encore de responsable. Choisis qui s\'en occupe.'**
+  String get unassignedSubtitle;
+
+  /// No description provided for @unassignedEmptyTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout est réparti'**
+  String get unassignedEmptyTitle;
+
+  /// No description provided for @unassignedEmptyDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chaque tâche a son responsable.'**
+  String get unassignedEmptyDetail;
+
+  /// No description provided for @assignToLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Attribuer à'**
+  String get assignToLabel;
+
+  /// No description provided for @rotateWhoLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Qui s\'en occupe cette fois ?'**
+  String get rotateWhoLabel;
+
   /// No description provided for @cancelButton.
   ///
   /// In fr, this message translates to:
@@ -854,11 +944,137 @@ abstract class AppLocalizations {
   /// **'Gérer'**
   String get manageAction;
 
-  /// No description provided for @chiefColorHint.
+  /// No description provided for @chiefMembersHint.
   ///
   /// In fr, this message translates to:
-  /// **'En tant que chef de tribu, touche une pastille pour changer la couleur'**
-  String get chiefColorHint;
+  /// **'Touche une pastille pour changer la couleur · glisse une ligne pour retirer un membre'**
+  String get chiefMembersHint;
+
+  /// No description provided for @memberColorHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Touche ta pastille pour changer ta couleur — elle s\'applique partout'**
+  String get memberColorHint;
+
+  /// No description provided for @meSuffix.
+  ///
+  /// In fr, this message translates to:
+  /// **'moi'**
+  String get meSuffix;
+
+  /// No description provided for @removeMemberQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer {name} de la tribu ?'**
+  String removeMemberQuestion(String name);
+
+  /// No description provided for @removeAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retirer'**
+  String get removeAction;
+
+  /// No description provided for @leaveTribeButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quitter la tribu'**
+  String get leaveTribeButton;
+
+  /// No description provided for @leaveChiefWarning.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu es le chef de la tribu. Avant de partir, choisis qui prend le relais.'**
+  String get leaveChiefWarning;
+
+  /// No description provided for @newChiefTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau chef de tribu'**
+  String get newChiefTitle;
+
+  /// No description provided for @nameAndLeaveButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nommer & quitter'**
+  String get nameAndLeaveButton;
+
+  /// No description provided for @leaveTribeQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quitter {name} ?'**
+  String leaveTribeQuestion(String name);
+
+  /// No description provided for @leaveTribeDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu ne verras plus ses tâches et ton score sera retiré du classement.'**
+  String get leaveTribeDetail;
+
+  /// No description provided for @deleteTribeQuestion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer la tribu ?'**
+  String get deleteTribeQuestion;
+
+  /// No description provided for @deleteTribeDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tu es le dernier membre. Quitter supprimera définitivement la tribu et ses tâches.'**
+  String get deleteTribeDetail;
+
+  /// No description provided for @deleteAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get deleteAction;
+
+  /// No description provided for @leaveAction.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quitter'**
+  String get leaveAction;
+
+  /// No description provided for @editProfileTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le profil'**
+  String get editProfileTitle;
+
+  /// No description provided for @editProfileSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ton nom et ta couleur apparaissent partout dans la tribu.'**
+  String get editProfileSubtitle;
+
+  /// No description provided for @changePhotoButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer la photo'**
+  String get changePhotoButton;
+
+  /// No description provided for @firstNameSimpleLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prénom'**
+  String get firstNameSimpleLabel;
+
+  /// No description provided for @myColorLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ma couleur'**
+  String get myColorLabel;
+
+  /// No description provided for @securityLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sécurité'**
+  String get securityLabel;
+
+  /// No description provided for @changePasswordLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Changer le mot de passe'**
+  String get changePasswordLabel;
 
   /// No description provided for @settingsLabel.
   ///
@@ -881,7 +1097,7 @@ abstract class AppLocalizations {
   /// No description provided for @remindersEntryLabel.
   ///
   /// In fr, this message translates to:
-  /// **'Récurrences & rappels'**
+  /// **'Récurrences'**
   String get remindersEntryLabel;
 
   /// No description provided for @rewardsEntryLabel.
@@ -974,23 +1190,95 @@ abstract class AppLocalizations {
   /// **'Terminé'**
   String get doneButton;
 
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisis ce que la tribu reçoit, et quand.'**
+  String get notificationsSubtitle;
+
+  /// No description provided for @allowNotificationsLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Autoriser les notifications'**
+  String get allowNotificationsLabel;
+
+  /// No description provided for @notificationsOnDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activées sur cet appareil'**
+  String get notificationsOnDetail;
+
+  /// No description provided for @notificationsOffDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tout est en pause'**
+  String get notificationsOffDetail;
+
+  /// No description provided for @taskRemindersSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rappels de tâches'**
+  String get taskRemindersSection;
+
+  /// No description provided for @tribeLifeSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vie de la tribu'**
+  String get tribeLifeSection;
+
+  /// No description provided for @pointsRewardsLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points & récompenses'**
+  String get pointsRewardsLabel;
+
+  /// No description provided for @pointsRewardsDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Quand un objectif est débloqué'**
+  String get pointsRewardsDetail;
+
+  /// No description provided for @doNotDisturbSection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ne pas déranger'**
+  String get doNotDisturbSection;
+
+  /// No description provided for @quietNightLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nuit calme'**
+  String get quietNightLabel;
+
+  /// No description provided for @quietNightDetail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune notif de 21:00 à 7:00'**
+  String get quietNightDetail;
+
   /// No description provided for @remindersTitle.
   ///
   /// In fr, this message translates to:
-  /// **'Récurrences & rappels'**
+  /// **'Récurrences'**
   String get remindersTitle;
 
   /// No description provided for @remindersSubtitle.
   ///
   /// In fr, this message translates to:
-  /// **'Quand et comment l\'app rappelle les tâches à la tribu.'**
+  /// **'Comment les tâches répétitives et les points se renouvellent.'**
   String get remindersSubtitle;
 
-  /// No description provided for @remindersSection.
+  /// No description provided for @recurrencesNote.
   ///
   /// In fr, this message translates to:
-  /// **'Rappels'**
-  String get remindersSection;
+  /// **'Les rappels et notifications se règlent dans « Notifications ».'**
+  String get recurrencesNote;
 
   /// No description provided for @remindTasksLabel.
   ///

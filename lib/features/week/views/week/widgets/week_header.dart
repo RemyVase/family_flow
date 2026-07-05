@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:our_tribe/features/week/views/week/week_controller.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
-import 'package:our_tribe/shared/icons/app_icon_data.dart';
-import 'package:our_tribe/shared/widgets/app_icon_button.dart';
+import 'package:our_tribe/shared/widgets/week_switcher.dart';
 import 'package:our_tribe/theme/app_text_styles.dart';
 import 'package:provider/provider.dart';
 
-/// Week header: week kicker + selected day title, calendar button.
+/// Week header: week kicker + selected day title, week switcher.
 class WeekHeader extends StatelessWidget {
   const WeekHeader({super.key});
 
@@ -41,7 +40,7 @@ class WeekHeader extends StatelessWidget {
             ],
           ),
         ),
-        const AppIconButton(icon: AppIconData.calendar),
+        WeekSwitcher(weekNumber: controller.weekNumber),
       ],
     );
   }

@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Task {
 
- String get id; String get name; TaskMoment get moment; String get time; int get points; String get memberId; TaskRecurrence get recurrence; bool get isDone; bool get hasPhoto; String? get description;
+ String get id; String get name; TaskMoment get moment; String get time; int get points;/// Assignee; null while the task is still up for grabs ("à répartir").
+ String? get memberId; TaskRecurrence get recurrence;/// Recurring task handed to a different member each time.
+ bool get isRotating; bool get isDone; bool get hasPhoto; String? get description;
 /// Create a copy of Task
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +27,16 @@ $TaskCopyWith<Task> get copyWith => _$TaskCopyWithImpl<Task>(this as Task, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Task&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.moment, moment) || other.moment == moment)&&(identical(other.time, time) || other.time == time)&&(identical(other.points, points) || other.points == points)&&(identical(other.memberId, memberId) || other.memberId == memberId)&&(identical(other.recurrence, recurrence) || other.recurrence == recurrence)&&(identical(other.isDone, isDone) || other.isDone == isDone)&&(identical(other.hasPhoto, hasPhoto) || other.hasPhoto == hasPhoto)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Task&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.moment, moment) || other.moment == moment)&&(identical(other.time, time) || other.time == time)&&(identical(other.points, points) || other.points == points)&&(identical(other.memberId, memberId) || other.memberId == memberId)&&(identical(other.recurrence, recurrence) || other.recurrence == recurrence)&&(identical(other.isRotating, isRotating) || other.isRotating == isRotating)&&(identical(other.isDone, isDone) || other.isDone == isDone)&&(identical(other.hasPhoto, hasPhoto) || other.hasPhoto == hasPhoto)&&(identical(other.description, description) || other.description == description));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,moment,time,points,memberId,recurrence,isDone,hasPhoto,description);
+int get hashCode => Object.hash(runtimeType,id,name,moment,time,points,memberId,recurrence,isRotating,isDone,hasPhoto,description);
 
 @override
 String toString() {
-  return 'Task(id: $id, name: $name, moment: $moment, time: $time, points: $points, memberId: $memberId, recurrence: $recurrence, isDone: $isDone, hasPhoto: $hasPhoto, description: $description)';
+  return 'Task(id: $id, name: $name, moment: $moment, time: $time, points: $points, memberId: $memberId, recurrence: $recurrence, isRotating: $isRotating, isDone: $isDone, hasPhoto: $hasPhoto, description: $description)';
 }
 
 
@@ -45,7 +47,7 @@ abstract mixin class $TaskCopyWith<$Res>  {
   factory $TaskCopyWith(Task value, $Res Function(Task) _then) = _$TaskCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, TaskMoment moment, String time, int points, String memberId, TaskRecurrence recurrence, bool isDone, bool hasPhoto, String? description
+ String id, String name, TaskMoment moment, String time, int points, String? memberId, TaskRecurrence recurrence, bool isRotating, bool isDone, bool hasPhoto, String? description
 });
 
 
@@ -62,16 +64,17 @@ class _$TaskCopyWithImpl<$Res>
 
 /// Create a copy of Task
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? moment = null,Object? time = null,Object? points = null,Object? memberId = null,Object? recurrence = null,Object? isDone = null,Object? hasPhoto = null,Object? description = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? moment = null,Object? time = null,Object? points = null,Object? memberId = freezed,Object? recurrence = null,Object? isRotating = null,Object? isDone = null,Object? hasPhoto = null,Object? description = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,moment: null == moment ? _self.moment : moment // ignore: cast_nullable_to_non_nullable
 as TaskMoment,time: null == time ? _self.time : time // ignore: cast_nullable_to_non_nullable
 as String,points: null == points ? _self.points : points // ignore: cast_nullable_to_non_nullable
-as int,memberId: null == memberId ? _self.memberId : memberId // ignore: cast_nullable_to_non_nullable
-as String,recurrence: null == recurrence ? _self.recurrence : recurrence // ignore: cast_nullable_to_non_nullable
-as TaskRecurrence,isDone: null == isDone ? _self.isDone : isDone // ignore: cast_nullable_to_non_nullable
+as int,memberId: freezed == memberId ? _self.memberId : memberId // ignore: cast_nullable_to_non_nullable
+as String?,recurrence: null == recurrence ? _self.recurrence : recurrence // ignore: cast_nullable_to_non_nullable
+as TaskRecurrence,isRotating: null == isRotating ? _self.isRotating : isRotating // ignore: cast_nullable_to_non_nullable
+as bool,isDone: null == isDone ? _self.isDone : isDone // ignore: cast_nullable_to_non_nullable
 as bool,hasPhoto: null == hasPhoto ? _self.hasPhoto : hasPhoto // ignore: cast_nullable_to_non_nullable
 as bool,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -159,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  TaskMoment moment,  String time,  int points,  String memberId,  TaskRecurrence recurrence,  bool isDone,  bool hasPhoto,  String? description)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  TaskMoment moment,  String time,  int points,  String? memberId,  TaskRecurrence recurrence,  bool isRotating,  bool isDone,  bool hasPhoto,  String? description)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Task() when $default != null:
-return $default(_that.id,_that.name,_that.moment,_that.time,_that.points,_that.memberId,_that.recurrence,_that.isDone,_that.hasPhoto,_that.description);case _:
+return $default(_that.id,_that.name,_that.moment,_that.time,_that.points,_that.memberId,_that.recurrence,_that.isRotating,_that.isDone,_that.hasPhoto,_that.description);case _:
   return orElse();
 
 }
@@ -180,10 +183,10 @@ return $default(_that.id,_that.name,_that.moment,_that.time,_that.points,_that.m
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  TaskMoment moment,  String time,  int points,  String memberId,  TaskRecurrence recurrence,  bool isDone,  bool hasPhoto,  String? description)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  TaskMoment moment,  String time,  int points,  String? memberId,  TaskRecurrence recurrence,  bool isRotating,  bool isDone,  bool hasPhoto,  String? description)  $default,) {final _that = this;
 switch (_that) {
 case _Task():
-return $default(_that.id,_that.name,_that.moment,_that.time,_that.points,_that.memberId,_that.recurrence,_that.isDone,_that.hasPhoto,_that.description);case _:
+return $default(_that.id,_that.name,_that.moment,_that.time,_that.points,_that.memberId,_that.recurrence,_that.isRotating,_that.isDone,_that.hasPhoto,_that.description);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +203,10 @@ return $default(_that.id,_that.name,_that.moment,_that.time,_that.points,_that.m
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  TaskMoment moment,  String time,  int points,  String memberId,  TaskRecurrence recurrence,  bool isDone,  bool hasPhoto,  String? description)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  TaskMoment moment,  String time,  int points,  String? memberId,  TaskRecurrence recurrence,  bool isRotating,  bool isDone,  bool hasPhoto,  String? description)?  $default,) {final _that = this;
 switch (_that) {
 case _Task() when $default != null:
-return $default(_that.id,_that.name,_that.moment,_that.time,_that.points,_that.memberId,_that.recurrence,_that.isDone,_that.hasPhoto,_that.description);case _:
+return $default(_that.id,_that.name,_that.moment,_that.time,_that.points,_that.memberId,_that.recurrence,_that.isRotating,_that.isDone,_that.hasPhoto,_that.description);case _:
   return null;
 
 }
@@ -214,8 +217,8 @@ return $default(_that.id,_that.name,_that.moment,_that.time,_that.points,_that.m
 /// @nodoc
 
 
-class _Task implements Task {
-  const _Task({required this.id, required this.name, required this.moment, required this.time, required this.points, required this.memberId, this.recurrence = TaskRecurrence.once, this.isDone = false, this.hasPhoto = false, this.description});
+class _Task extends Task {
+  const _Task({required this.id, required this.name, required this.moment, required this.time, required this.points, this.memberId, this.recurrence = TaskRecurrence.once, this.isRotating = false, this.isDone = false, this.hasPhoto = false, this.description}): super._();
   
 
 @override final  String id;
@@ -223,8 +226,11 @@ class _Task implements Task {
 @override final  TaskMoment moment;
 @override final  String time;
 @override final  int points;
-@override final  String memberId;
+/// Assignee; null while the task is still up for grabs ("à répartir").
+@override final  String? memberId;
 @override@JsonKey() final  TaskRecurrence recurrence;
+/// Recurring task handed to a different member each time.
+@override@JsonKey() final  bool isRotating;
 @override@JsonKey() final  bool isDone;
 @override@JsonKey() final  bool hasPhoto;
 @override final  String? description;
@@ -239,16 +245,16 @@ _$TaskCopyWith<_Task> get copyWith => __$TaskCopyWithImpl<_Task>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Task&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.moment, moment) || other.moment == moment)&&(identical(other.time, time) || other.time == time)&&(identical(other.points, points) || other.points == points)&&(identical(other.memberId, memberId) || other.memberId == memberId)&&(identical(other.recurrence, recurrence) || other.recurrence == recurrence)&&(identical(other.isDone, isDone) || other.isDone == isDone)&&(identical(other.hasPhoto, hasPhoto) || other.hasPhoto == hasPhoto)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Task&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.moment, moment) || other.moment == moment)&&(identical(other.time, time) || other.time == time)&&(identical(other.points, points) || other.points == points)&&(identical(other.memberId, memberId) || other.memberId == memberId)&&(identical(other.recurrence, recurrence) || other.recurrence == recurrence)&&(identical(other.isRotating, isRotating) || other.isRotating == isRotating)&&(identical(other.isDone, isDone) || other.isDone == isDone)&&(identical(other.hasPhoto, hasPhoto) || other.hasPhoto == hasPhoto)&&(identical(other.description, description) || other.description == description));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,moment,time,points,memberId,recurrence,isDone,hasPhoto,description);
+int get hashCode => Object.hash(runtimeType,id,name,moment,time,points,memberId,recurrence,isRotating,isDone,hasPhoto,description);
 
 @override
 String toString() {
-  return 'Task(id: $id, name: $name, moment: $moment, time: $time, points: $points, memberId: $memberId, recurrence: $recurrence, isDone: $isDone, hasPhoto: $hasPhoto, description: $description)';
+  return 'Task(id: $id, name: $name, moment: $moment, time: $time, points: $points, memberId: $memberId, recurrence: $recurrence, isRotating: $isRotating, isDone: $isDone, hasPhoto: $hasPhoto, description: $description)';
 }
 
 
@@ -259,7 +265,7 @@ abstract mixin class _$TaskCopyWith<$Res> implements $TaskCopyWith<$Res> {
   factory _$TaskCopyWith(_Task value, $Res Function(_Task) _then) = __$TaskCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, TaskMoment moment, String time, int points, String memberId, TaskRecurrence recurrence, bool isDone, bool hasPhoto, String? description
+ String id, String name, TaskMoment moment, String time, int points, String? memberId, TaskRecurrence recurrence, bool isRotating, bool isDone, bool hasPhoto, String? description
 });
 
 
@@ -276,16 +282,17 @@ class __$TaskCopyWithImpl<$Res>
 
 /// Create a copy of Task
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? moment = null,Object? time = null,Object? points = null,Object? memberId = null,Object? recurrence = null,Object? isDone = null,Object? hasPhoto = null,Object? description = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? moment = null,Object? time = null,Object? points = null,Object? memberId = freezed,Object? recurrence = null,Object? isRotating = null,Object? isDone = null,Object? hasPhoto = null,Object? description = freezed,}) {
   return _then(_Task(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,moment: null == moment ? _self.moment : moment // ignore: cast_nullable_to_non_nullable
 as TaskMoment,time: null == time ? _self.time : time // ignore: cast_nullable_to_non_nullable
 as String,points: null == points ? _self.points : points // ignore: cast_nullable_to_non_nullable
-as int,memberId: null == memberId ? _self.memberId : memberId // ignore: cast_nullable_to_non_nullable
-as String,recurrence: null == recurrence ? _self.recurrence : recurrence // ignore: cast_nullable_to_non_nullable
-as TaskRecurrence,isDone: null == isDone ? _self.isDone : isDone // ignore: cast_nullable_to_non_nullable
+as int,memberId: freezed == memberId ? _self.memberId : memberId // ignore: cast_nullable_to_non_nullable
+as String?,recurrence: null == recurrence ? _self.recurrence : recurrence // ignore: cast_nullable_to_non_nullable
+as TaskRecurrence,isRotating: null == isRotating ? _self.isRotating : isRotating // ignore: cast_nullable_to_non_nullable
+as bool,isDone: null == isDone ? _self.isDone : isDone // ignore: cast_nullable_to_non_nullable
 as bool,hasPhoto: null == hasPhoto ? _self.hasPhoto : hasPhoto // ignore: cast_nullable_to_non_nullable
 as bool,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,

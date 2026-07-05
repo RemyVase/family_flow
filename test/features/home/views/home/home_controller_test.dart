@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:our_tribe/features/home/views/home/home_controller.dart';
 import 'package:our_tribe/features/tasks/models/task.dart';
 import 'package:our_tribe/features/tasks/models/task_moment.dart';
+import 'package:our_tribe/services/task_service.dart';
 
 void main() {
   const tasks = [
@@ -26,7 +27,7 @@ void main() {
 
   group('HomeController', () {
     test('should expose counts and points computed from tasks', () {
-      final controller = HomeController(tasks: tasks);
+      final controller = HomeController(TaskService(tasks: tasks));
 
       expect(controller.totalCount, 2);
       expect(controller.doneCount, 1);
@@ -39,7 +40,7 @@ void main() {
     test(
       'should toggle a task and notify listeners when toggleTask is called',
       () {
-        final controller = HomeController(tasks: tasks);
+        final controller = HomeController(TaskService(tasks: tasks));
         var notified = false;
         controller.addListener(() => notified = true);
 
@@ -53,7 +54,7 @@ void main() {
     );
 
     test('should keep state unchanged when toggling an unknown task', () {
-      final controller = HomeController(tasks: tasks);
+      final controller = HomeController(TaskService(tasks: tasks));
 
       controller.toggleTask('unknown');
 
@@ -61,7 +62,7 @@ void main() {
     });
 
     test('should expose the right progress message per state', () {
-      final controller = HomeController(tasks: tasks);
+      final controller = HomeController(TaskService(tasks: tasks));
       expect(controller.progressMessage, HomeProgressMessage.almost);
 
       controller.toggleTask('a');
@@ -73,7 +74,7 @@ void main() {
     });
 
     test('should group tasks by moment when tasksFor is called', () {
-      final controller = HomeController(tasks: tasks);
+      final controller = HomeController(TaskService(tasks: tasks));
 
       expect(controller.tasksFor(TaskMoment.morning).single.id, 'a');
       expect(controller.tasksFor(TaskMoment.afternoon), isEmpty);

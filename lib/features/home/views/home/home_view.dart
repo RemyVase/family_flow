@@ -3,7 +3,9 @@ import 'package:our_tribe/features/home/views/home/home_controller.dart';
 import 'package:our_tribe/features/home/views/home/widgets/home_header.dart';
 import 'package:our_tribe/features/home/views/home/widgets/home_progress_card.dart';
 import 'package:our_tribe/features/home/views/home/widgets/home_task_section.dart';
+import 'package:our_tribe/features/home/views/home/widgets/unassigned_banner.dart';
 import 'package:our_tribe/features/tasks/models/task_moment.dart';
+import 'package:our_tribe/services/task_service.dart';
 import 'package:our_tribe/shared/widgets/tribe_background.dart';
 import 'package:our_tribe/theme/app_spacing.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +17,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => HomeController(),
+      create: (context) => HomeController(context.read<TaskService>()),
       child: const _HomeBody(),
     );
   }
@@ -43,6 +45,7 @@ class _HomeBody extends StatelessWidget {
                 HomeHeader(),
                 SizedBox(height: 22),
                 HomeProgressCard(),
+                UnassignedBanner(),
                 HomeTaskSection(moment: TaskMoment.morning),
                 HomeTaskSection(moment: TaskMoment.afternoon),
                 HomeTaskSection(moment: TaskMoment.evening),

@@ -5,6 +5,10 @@ abstract final class MockRewards {
   /// Weekly tribe points balance shown on the rewards screen.
   static const int weeklyTribePoints = 84;
 
+  /// Tribe goal highlighted on the recap summary.
+  static const String tribeGoalName = 'sortie ciné';
+  static const int tribeGoalPoints = 100;
+
   static const List<Reward> rewards = [
     Reward(id: 'r1', name: 'Sortie ciné en tribu', goal: 100),
     Reward(id: 'r2', name: 'Léa choisit le repas', goal: 40, memberId: 'lea'),

@@ -23,6 +23,7 @@ class ProfileSettingsList extends StatelessWidget {
         icon: AppIconData.bell,
         label: l10n.notificationsLabel,
         detail: l10n.notificationsEnabled,
+        onTap: () => context.push(AppRoute.settingsNotifications.path),
       ),
       _SettingsRowData(
         icon: AppIconData.repeat,

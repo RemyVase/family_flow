@@ -338,6 +338,63 @@ class AppLocalizationsEn extends AppLocalizations {
   String get undoDoneButton => 'Done! Undo';
 
   @override
+  String get attributionLabel => 'Assignment';
+
+  @override
+  String get assignPersonChip => 'One person';
+
+  @override
+  String get assignRotateChip => 'Taking turns';
+
+  @override
+  String get assignUnassignedChip => 'Up for grabs';
+
+  @override
+  String get assignUnassignedHint =>
+      'The task will go to \"Up for grabs\", anyone can take it.';
+
+  @override
+  String get assignRotateHint =>
+      'Each time, the tribe picks who takes care of it.';
+
+  @override
+  String get rotateBadge => 'Taking turns';
+
+  @override
+  String unassignedBannerTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks to assign',
+      one: '1 task to assign',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get unassignedBannerSubtitle =>
+      'Nobody is assigned yet · tap to assign';
+
+  @override
+  String get unassignedTitle => 'Up for grabs';
+
+  @override
+  String get unassignedSubtitle =>
+      'These tasks have no owner yet. Pick who takes care of them.';
+
+  @override
+  String get unassignedEmptyTitle => 'Everything is assigned';
+
+  @override
+  String get unassignedEmptyDetail => 'Every task has its owner.';
+
+  @override
+  String get assignToLabel => 'Assign to';
+
+  @override
+  String get rotateWhoLabel => 'Who takes care of it this time?';
+
+  @override
   String get cancelButton => 'Cancel';
 
   @override
@@ -429,8 +486,80 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manageAction => 'Manage';
 
   @override
-  String get chiefColorHint =>
-      'As tribe chief, tap a swatch to change the color';
+  String get chiefMembersHint =>
+      'Tap a swatch to change the color · swipe a row to remove a member';
+
+  @override
+  String get memberColorHint =>
+      'Tap your swatch to change your color — it applies everywhere';
+
+  @override
+  String get meSuffix => 'me';
+
+  @override
+  String removeMemberQuestion(String name) {
+    return 'Remove $name from the tribe?';
+  }
+
+  @override
+  String get removeAction => 'Remove';
+
+  @override
+  String get leaveTribeButton => 'Leave the tribe';
+
+  @override
+  String get leaveChiefWarning =>
+      'You are the tribe chief. Before leaving, choose who takes over.';
+
+  @override
+  String get newChiefTitle => 'New tribe chief';
+
+  @override
+  String get nameAndLeaveButton => 'Appoint & leave';
+
+  @override
+  String leaveTribeQuestion(String name) {
+    return 'Leave $name?';
+  }
+
+  @override
+  String get leaveTribeDetail =>
+      'You will no longer see its tasks and your score will be removed from the leaderboard.';
+
+  @override
+  String get deleteTribeQuestion => 'Delete the tribe?';
+
+  @override
+  String get deleteTribeDetail =>
+      'You are the last member. Leaving will permanently delete the tribe and its tasks.';
+
+  @override
+  String get deleteAction => 'Delete';
+
+  @override
+  String get leaveAction => 'Leave';
+
+  @override
+  String get editProfileTitle => 'Edit profile';
+
+  @override
+  String get editProfileSubtitle =>
+      'Your name and color appear everywhere in the tribe.';
+
+  @override
+  String get changePhotoButton => 'Change photo';
+
+  @override
+  String get firstNameSimpleLabel => 'First name';
+
+  @override
+  String get myColorLabel => 'My color';
+
+  @override
+  String get securityLabel => 'Security';
+
+  @override
+  String get changePasswordLabel => 'Change password';
 
   @override
   String get settingsLabel => 'Settings';
@@ -442,7 +571,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsEnabled => 'Enabled';
 
   @override
-  String get remindersEntryLabel => 'Recurrences & reminders';
+  String get remindersEntryLabel => 'Recurrences';
 
   @override
   String get rewardsEntryLabel => 'Rewards';
@@ -499,14 +628,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get doneButton => 'Done';
 
   @override
-  String get remindersTitle => 'Recurrences & reminders';
+  String get notificationsTitle => 'Notifications';
 
   @override
-  String get remindersSubtitle =>
-      'When and how the app reminds the tribe about tasks.';
+  String get notificationsSubtitle =>
+      'Choose what the tribe receives, and when.';
 
   @override
-  String get remindersSection => 'Reminders';
+  String get allowNotificationsLabel => 'Allow notifications';
+
+  @override
+  String get notificationsOnDetail => 'Enabled on this device';
+
+  @override
+  String get notificationsOffDetail => 'Everything is paused';
+
+  @override
+  String get taskRemindersSection => 'Task reminders';
+
+  @override
+  String get tribeLifeSection => 'Tribe life';
+
+  @override
+  String get pointsRewardsLabel => 'Points & rewards';
+
+  @override
+  String get pointsRewardsDetail => 'When a goal is unlocked';
+
+  @override
+  String get doNotDisturbSection => 'Do not disturb';
+
+  @override
+  String get quietNightLabel => 'Quiet night';
+
+  @override
+  String get quietNightDetail => 'No notifications from 21:00 to 7:00';
+
+  @override
+  String get remindersTitle => 'Recurrences';
+
+  @override
+  String get remindersSubtitle => 'How repeating tasks and points renew.';
+
+  @override
+  String get recurrencesNote =>
+      'Reminders and notifications are set in \"Notifications\".';
 
   @override
   String get remindTasksLabel => 'Remind about tasks';

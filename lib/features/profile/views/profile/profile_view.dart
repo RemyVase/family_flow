@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:our_tribe/features/profile/views/profile/profile_controller.dart';
+import 'package:our_tribe/features/profile/views/profile/widgets/leave_tribe_sheet.dart';
 import 'package:our_tribe/features/profile/views/profile/widgets/profile_invite_code_card.dart';
 import 'package:our_tribe/features/profile/views/profile/widgets/profile_logout_button.dart';
+import 'package:our_tribe/features/profile/views/profile/widgets/profile_member_row.dart';
 import 'package:our_tribe/features/profile/views/profile/widgets/profile_members_card.dart';
 import 'package:our_tribe/features/profile/views/profile/widgets/profile_settings_list.dart';
 import 'package:our_tribe/features/profile/views/profile/widgets/profile_user_card.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/services/tribe_service.dart';
+import 'package:our_tribe/shared/icons/app_icon.dart';
+import 'package:our_tribe/shared/icons/app_icon_data.dart';
 import 'package:our_tribe/shared/widgets/section_label.dart';
 import 'package:our_tribe/shared/widgets/tribe_background.dart';
+import 'package:our_tribe/theme/app_colors.dart';
+import 'package:our_tribe/theme/app_radii.dart';
 import 'package:our_tribe/theme/app_spacing.dart';
 import 'package:our_tribe/theme/app_text_styles.dart';
 import 'package:provider/provider.dart';
@@ -64,6 +70,8 @@ class _ProfileBody extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 const ProfileSettingsList(),
                 const SizedBox(height: AppSpacing.lg + 2),
+                const _LeaveTribeButton(),
+                const SizedBox(height: 9),
                 const ProfileLogoutButton(),
                 const SizedBox(height: AppSpacing.cardPadding),
                 Center(
@@ -78,6 +86,43 @@ class _ProfileBody extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// "Quitter la tribu" button (`.pf-leave`), opens the leave sheet.
+class _LeaveTribeButton extends StatelessWidget {
+  const _LeaveTribeButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return GestureDetector(
+      onTap: () => showLeaveTribeSheet(context),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 13),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          border: Border.all(color: AppColors.soften(kDangerRed, 0.26)),
+          borderRadius: BorderRadius.circular(AppRadii.button),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const AppIcon(AppIconData.logout, size: 18, color: kDangerRed),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              l10n.leaveTribeButton,
+              style: AppTextStyles.action.copyWith(
+                fontSize: 15,
+                color: kDangerRed,
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -2,7 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 
-/// State of the profile screen: which member's color palette is open.
+/// State of the profile screen: member list interactions (color palette,
+/// removal) and the current user's role.
 class ProfileController extends ChangeNotifier {
   ProfileController(this._tribeService);
 
@@ -10,6 +11,16 @@ class ProfileController extends ChangeNotifier {
 
   String? _editingMemberId;
   String? get editingMemberId => _editingMemberId;
+
+  bool get isChief => _tribeService.currentMember.isChief;
+
+  /// The chief edits anyone's color; a member only their own.
+  bool canEditColor(String memberId) =>
+      isChief || _tribeService.currentMember.id == memberId;
+
+  /// The chief can remove anyone but themselves.
+  bool canRemove(String memberId) =>
+      isChief && _tribeService.currentMember.id != memberId;
 
   void toggleEditing(String memberId) {
     _editingMemberId = _editingMemberId == memberId ? null : memberId;
@@ -19,6 +30,11 @@ class ProfileController extends ChangeNotifier {
   void setMemberColor(String memberId, Color color) {
     _tribeService.setMemberColor(memberId, color);
     _editingMemberId = null;
+    notifyListeners();
+  }
+
+  void removeMember(String memberId) {
+    _tribeService.removeMember(memberId);
     notifyListeners();
   }
 }

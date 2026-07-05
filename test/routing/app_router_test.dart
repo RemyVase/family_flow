@@ -3,13 +3,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/routing/app_route.dart';
 import 'package:our_tribe/routing/app_router.dart';
+import 'package:our_tribe/services/task_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/widgets/app_tab_bar.dart';
 import 'package:provider/provider.dart';
 
 Widget buildTestApp() {
-  return ChangeNotifierProvider<TribeService>(
-    create: (_) => TribeService(),
+  return MultiProvider(
+    providers: [
+      ChangeNotifierProvider<TribeService>(create: (_) => TribeService()),
+      ChangeNotifierProvider<TaskService>(create: (_) => TaskService()),
+    ],
     child: MaterialApp.router(
       routerConfig: appRouter,
       locale: const Locale('fr'),

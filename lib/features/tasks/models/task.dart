@@ -6,16 +6,25 @@ part 'task.freezed.dart';
 
 @freezed
 abstract class Task with _$Task {
+  const Task._();
+
   const factory Task({
     required String id,
     required String name,
     required TaskMoment moment,
     required String time,
     required int points,
-    required String memberId,
+
+    /// Assignee; null while the task is still up for grabs ("à répartir").
+    String? memberId,
     @Default(TaskRecurrence.once) TaskRecurrence recurrence,
+
+    /// Recurring task handed to a different member each time.
+    @Default(false) bool isRotating,
     @Default(false) bool isDone,
     @Default(false) bool hasPhoto,
     String? description,
   }) = _Task;
+
+  bool get isUnassigned => memberId == null;
 }

@@ -37,4 +37,19 @@ class TribeService extends ChangeNotifier {
     _members[index] = _members[index].copyWith(color: color);
     notifyListeners();
   }
+
+  /// Removes a member from the tribe (chief-only; never the current user).
+  void removeMember(String memberId) {
+    _members.removeWhere((m) => m.id == memberId && !m.isCurrentUser);
+    notifyListeners();
+  }
+
+  /// Renames the signed-in member (profile edit).
+  void renameCurrentMember(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return;
+    final index = _members.indexWhere((m) => m.isCurrentUser);
+    _members[index] = _members[index].copyWith(name: trimmed);
+    notifyListeners();
+  }
 }

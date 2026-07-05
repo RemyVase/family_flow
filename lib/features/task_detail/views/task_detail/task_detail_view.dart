@@ -44,7 +44,11 @@ class _TaskDetailBody extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final controller = context.watch<TaskDetailController>();
     final task = controller.task;
-    final member = context.watch<TribeService>().memberById(task.memberId);
+    final tribeService = context.watch<TribeService>();
+    // Unassigned tasks fall back to the current member for the visuals.
+    final member = task.memberId == null
+        ? tribeService.currentMember
+        : tribeService.memberById(task.memberId!);
     final recurrence = task.recurrence.label(l10n);
 
     return Scaffold(

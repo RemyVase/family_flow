@@ -6,6 +6,7 @@ import 'package:our_tribe/shared/icons/app_icon.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
 import 'package:our_tribe/shared/utils/recurrence_label.dart';
 import 'package:our_tribe/shared/widgets/points_badge.dart';
+import 'package:our_tribe/shared/widgets/rotate_badge.dart';
 import 'package:our_tribe/theme/app_colors.dart';
 import 'package:our_tribe/theme/app_durations.dart';
 import 'package:our_tribe/theme/app_radii.dart';
@@ -17,17 +18,21 @@ import 'package:our_tribe/theme/app_text_styles.dart';
 ///
 /// When [member] is provided (week / family lists), the card shows a
 /// member-colored left border and a member dot + name instead of the time.
+/// When [assignee] is provided (home), the assignee dot + name is appended
+/// to the meta row after the time and recurrence.
 class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
     required this.task,
     this.member,
+    this.assignee,
     this.onToggle,
     this.onTap,
   });
 
   final Task task;
   final Member? member;
+  final Member? assignee;
   final VoidCallback? onToggle;
   final VoidCallback? onTap;
 
@@ -109,6 +114,23 @@ class TaskCard extends StatelessWidget {
                         ),
                         const SizedBox(width: AppSpacing.xxs),
                         Text(recurrence, style: AppTextStyles.meta),
+                      ],
+                      if (assignee != null) ...[
+                        const SizedBox(width: 11),
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: assignee!.color,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.xxs),
+                        Text(assignee!.name, style: AppTextStyles.meta),
+                      ],
+                      if (task.isRotating) ...[
+                        const SizedBox(width: 11),
+                        const RotateBadge(),
                       ],
                     ],
                   ),

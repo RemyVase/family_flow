@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:our_tribe/config/app_environment.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/routing/app_router.dart';
+import 'package:our_tribe/services/task_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/widgets/dev_banner.dart';
 import 'package:our_tribe/theme/app_theme.dart';
@@ -19,6 +20,7 @@ class OurTribeApp extends StatelessWidget {
         // Cross-feature services. Repositories will be bound to their
         // interfaces here once the backend is wired.
         ChangeNotifierProvider<TribeService>(create: (_) => TribeService()),
+        ChangeNotifierProvider<TaskService>(create: (_) => TaskService()),
       ],
       child: MaterialApp.router(
         title: config.appName,

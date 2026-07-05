@@ -339,6 +339,63 @@ class AppLocalizationsFr extends AppLocalizations {
   String get undoDoneButton => 'Fait ! Annuler';
 
   @override
+  String get attributionLabel => 'Attribution';
+
+  @override
+  String get assignPersonChip => 'Une personne';
+
+  @override
+  String get assignRotateChip => 'À tour de rôle';
+
+  @override
+  String get assignUnassignedChip => 'À répartir';
+
+  @override
+  String get assignUnassignedHint =>
+      'La tâche ira dans « À répartir », chacun pourra la prendre.';
+
+  @override
+  String get assignRotateHint =>
+      'À chaque fois, la tribu choisit qui s\'en occupe.';
+
+  @override
+  String get rotateBadge => 'À tour de rôle';
+
+  @override
+  String unassignedBannerTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tâches à répartir',
+      one: '1 tâche à répartir',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get unassignedBannerSubtitle =>
+      'Personne n\'est encore assigné · appuie pour répartir';
+
+  @override
+  String get unassignedTitle => 'À répartir';
+
+  @override
+  String get unassignedSubtitle =>
+      'Ces tâches n\'ont pas encore de responsable. Choisis qui s\'en occupe.';
+
+  @override
+  String get unassignedEmptyTitle => 'Tout est réparti';
+
+  @override
+  String get unassignedEmptyDetail => 'Chaque tâche a son responsable.';
+
+  @override
+  String get assignToLabel => 'Attribuer à';
+
+  @override
+  String get rotateWhoLabel => 'Qui s\'en occupe cette fois ?';
+
+  @override
   String get cancelButton => 'Annuler';
 
   @override
@@ -430,8 +487,80 @@ class AppLocalizationsFr extends AppLocalizations {
   String get manageAction => 'Gérer';
 
   @override
-  String get chiefColorHint =>
-      'En tant que chef de tribu, touche une pastille pour changer la couleur';
+  String get chiefMembersHint =>
+      'Touche une pastille pour changer la couleur · glisse une ligne pour retirer un membre';
+
+  @override
+  String get memberColorHint =>
+      'Touche ta pastille pour changer ta couleur — elle s\'applique partout';
+
+  @override
+  String get meSuffix => 'moi';
+
+  @override
+  String removeMemberQuestion(String name) {
+    return 'Retirer $name de la tribu ?';
+  }
+
+  @override
+  String get removeAction => 'Retirer';
+
+  @override
+  String get leaveTribeButton => 'Quitter la tribu';
+
+  @override
+  String get leaveChiefWarning =>
+      'Tu es le chef de la tribu. Avant de partir, choisis qui prend le relais.';
+
+  @override
+  String get newChiefTitle => 'Nouveau chef de tribu';
+
+  @override
+  String get nameAndLeaveButton => 'Nommer & quitter';
+
+  @override
+  String leaveTribeQuestion(String name) {
+    return 'Quitter $name ?';
+  }
+
+  @override
+  String get leaveTribeDetail =>
+      'Tu ne verras plus ses tâches et ton score sera retiré du classement.';
+
+  @override
+  String get deleteTribeQuestion => 'Supprimer la tribu ?';
+
+  @override
+  String get deleteTribeDetail =>
+      'Tu es le dernier membre. Quitter supprimera définitivement la tribu et ses tâches.';
+
+  @override
+  String get deleteAction => 'Supprimer';
+
+  @override
+  String get leaveAction => 'Quitter';
+
+  @override
+  String get editProfileTitle => 'Modifier le profil';
+
+  @override
+  String get editProfileSubtitle =>
+      'Ton nom et ta couleur apparaissent partout dans la tribu.';
+
+  @override
+  String get changePhotoButton => 'Changer la photo';
+
+  @override
+  String get firstNameSimpleLabel => 'Prénom';
+
+  @override
+  String get myColorLabel => 'Ma couleur';
+
+  @override
+  String get securityLabel => 'Sécurité';
+
+  @override
+  String get changePasswordLabel => 'Changer le mot de passe';
 
   @override
   String get settingsLabel => 'Paramètres';
@@ -443,7 +572,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notificationsEnabled => 'Activées';
 
   @override
-  String get remindersEntryLabel => 'Récurrences & rappels';
+  String get remindersEntryLabel => 'Récurrences';
 
   @override
   String get rewardsEntryLabel => 'Récompenses';
@@ -500,14 +629,52 @@ class AppLocalizationsFr extends AppLocalizations {
   String get doneButton => 'Terminé';
 
   @override
-  String get remindersTitle => 'Récurrences & rappels';
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationsSubtitle =>
+      'Choisis ce que la tribu reçoit, et quand.';
+
+  @override
+  String get allowNotificationsLabel => 'Autoriser les notifications';
+
+  @override
+  String get notificationsOnDetail => 'Activées sur cet appareil';
+
+  @override
+  String get notificationsOffDetail => 'Tout est en pause';
+
+  @override
+  String get taskRemindersSection => 'Rappels de tâches';
+
+  @override
+  String get tribeLifeSection => 'Vie de la tribu';
+
+  @override
+  String get pointsRewardsLabel => 'Points & récompenses';
+
+  @override
+  String get pointsRewardsDetail => 'Quand un objectif est débloqué';
+
+  @override
+  String get doNotDisturbSection => 'Ne pas déranger';
+
+  @override
+  String get quietNightLabel => 'Nuit calme';
+
+  @override
+  String get quietNightDetail => 'Aucune notif de 21:00 à 7:00';
+
+  @override
+  String get remindersTitle => 'Récurrences';
 
   @override
   String get remindersSubtitle =>
-      'Quand et comment l\'app rappelle les tâches à la tribu.';
+      'Comment les tâches répétitives et les points se renouvellent.';
 
   @override
-  String get remindersSection => 'Rappels';
+  String get recurrencesNote =>
+      'Les rappels et notifications se règlent dans « Notifications ».';
 
   @override
   String get remindTasksLabel => 'Rappeler les tâches';

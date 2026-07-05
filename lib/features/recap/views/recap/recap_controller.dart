@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:our_tribe/features/settings/models/mock_rewards.dart';
 import 'package:our_tribe/features/tasks/models/mock_tasks.dart';
 import 'package:our_tribe/features/tasks/models/task.dart';
 import 'package:our_tribe/features/tasks/models/task_recurrence.dart';
@@ -19,8 +20,8 @@ class RecapController extends ChangeNotifier {
   final List<Task> _tasks;
 
   /// Weekly tribe goal (demo values).
-  static const int rewardGoal = 100;
-  static const String rewardName = 'sortie ciné';
+  static const int rewardGoal = MockRewards.tribeGoalPoints;
+  static const String rewardName = MockRewards.tribeGoalName;
   static const int deltaVsLastWeek = 12;
 
   RecapSegment _segment = RecapSegment.summary;

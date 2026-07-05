@@ -4,6 +4,7 @@ import 'package:our_tribe/features/home/views/home/home_controller.dart';
 import 'package:our_tribe/features/tasks/models/task_moment.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/routing/app_route.dart';
+import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/icons/app_icon.dart';
 import 'package:our_tribe/shared/utils/task_moment_style.dart';
 import 'package:our_tribe/shared/widgets/task_card.dart';
@@ -23,6 +24,7 @@ class HomeTaskSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final controller = context.watch<HomeController>();
+    final tribeService = context.watch<TribeService>();
     final tasks = controller.tasksFor(moment);
     if (tasks.isEmpty) return const SizedBox.shrink();
 
@@ -64,6 +66,9 @@ class HomeTaskSection extends StatelessWidget {
           for (final task in tasks)
             TaskCard(
               task: task,
+              assignee: task.memberId == null
+                  ? null
+                  : tribeService.memberById(task.memberId!),
               onToggle: () => controller.toggleTask(task.id),
               onTap: () => context.push(AppRoute.taskDetail.path, extra: task),
             ),

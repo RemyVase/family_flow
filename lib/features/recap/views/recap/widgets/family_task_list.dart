@@ -172,7 +172,10 @@ class _FamilyTaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.read<RecapController>();
-    final member = context.watch<TribeService>().memberById(task.memberId);
+    final tribeService = context.watch<TribeService>();
+    final member = task.memberId == null
+        ? null
+        : tribeService.memberById(task.memberId!);
 
     return TaskCard(
       task: task,

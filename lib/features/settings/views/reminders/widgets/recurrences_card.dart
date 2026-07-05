@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:our_tribe/features/settings/views/reminders/reminders_controller.dart';
-import 'package:our_tribe/features/settings/views/reminders/widgets/setting_row.dart';
-import 'package:our_tribe/features/settings/views/reminders/widgets/settings_card.dart';
+import 'package:our_tribe/features/settings/widgets/setting_row.dart';
+import 'package:our_tribe/features/settings/widgets/settings_card.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
 import 'package:our_tribe/shared/widgets/segmented_control.dart';

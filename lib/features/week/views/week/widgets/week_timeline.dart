@@ -42,7 +42,10 @@ class _TimelineRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.read<WeekController>();
-    final member = context.watch<TribeService>().memberById(task.memberId);
+    final tribeService = context.watch<TribeService>();
+    final member = task.memberId == null
+        ? null
+        : tribeService.memberById(task.memberId!);
 
     return IntrinsicHeight(
       child: Row(
@@ -59,7 +62,7 @@ class _TimelineRow extends StatelessWidget {
               ),
             ),
           ),
-          _TimelineRail(dotColor: member.color),
+          _TimelineRail(dotColor: member?.color ?? AppColors.inkTertiary),
           Expanded(
             child: TaskCard(
               task: task,

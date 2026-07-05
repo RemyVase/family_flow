@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:our_tribe/features/task_create/views/task_create/task_create_controller.dart';
+import 'package:our_tribe/features/task_create/views/task_create/widgets/task_create_assignment_chips.dart';
 import 'package:our_tribe/features/task_create/views/task_create/widgets/task_create_moment_chips.dart';
 import 'package:our_tribe/features/task_create/views/task_create/widgets/task_create_person_selector.dart';
 import 'package:our_tribe/features/task_create/views/task_create/widgets/task_create_photos_row.dart';
 import 'package:our_tribe/features/task_create/views/task_create/widgets/task_create_points_stepper.dart';
 import 'package:our_tribe/features/task_create/views/task_create/widgets/task_create_recurrence_chips.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
+import 'package:our_tribe/services/task_service.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
 import 'package:our_tribe/shared/widgets/app_text_field.dart';
 import 'package:our_tribe/shared/widgets/primary_button.dart';
@@ -24,7 +26,7 @@ class TaskCreateView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => TaskCreateController(),
+      create: (context) => TaskCreateController(context.read<TaskService>()),
       child: const _TaskCreateBody(),
     );
   }
@@ -72,9 +74,15 @@ class _TaskCreateBody extends StatelessWidget {
                       onChanged: controller.setDescription,
                     ),
                     const SizedBox(height: AppSpacing.xl),
-                    SectionLabel(l10n.forWhoLabel),
+                    SectionLabel(l10n.attributionLabel),
                     const SizedBox(height: 9),
-                    const TaskCreatePersonSelector(),
+                    const TaskCreateAssignmentChips(),
+                    if (controller.assignment == TaskAssignment.person) ...[
+                      const SizedBox(height: AppSpacing.xl),
+                      SectionLabel(l10n.forWhoLabel),
+                      const SizedBox(height: 9),
+                      const TaskCreatePersonSelector(),
+                    ],
                     const SizedBox(height: AppSpacing.xl),
                     SectionLabel(l10n.pointsSectionLabel),
                     const SizedBox(height: 9),
@@ -101,9 +109,11 @@ class _TaskCreateBody extends StatelessWidget {
                 child: PrimaryButton(
                   label: l10n.createTaskButton,
                   leadingIcon: AppIconData.plus,
-                  // Creation will persist once the tasks backend exists;
-                  // for now the flow simply closes.
-                  onPressed: controller.canCreate ? () => context.pop() : null,
+                  onPressed: controller.canCreate
+                      ? () {
+                          if (controller.createTask()) context.pop();
+                        }
+                      : null,
                 ),
               ),
             ),

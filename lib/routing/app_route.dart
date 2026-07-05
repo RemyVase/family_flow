@@ -16,9 +16,13 @@ enum AppRoute {
 
   taskCreate('/tasks/create'),
   taskDetail('/tasks/detail'),
+  tasksUnassigned('/tasks/unassigned'),
+
+  profileEdit('/profile/edit'),
 
   settingsRewards('/settings/rewards'),
-  settingsReminders('/settings/reminders');
+  settingsReminders('/settings/reminders'),
+  settingsNotifications('/settings/notifications');
 
   const AppRoute(this.path);
 

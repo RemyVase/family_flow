@@ -24,7 +24,7 @@ abstract final class MockTasks {
       recurrence: TaskRecurrence.twiceDaily,
       points: 1,
       isDone: true,
-      memberId: 'lea',
+      memberId: 'tom',
     ),
     Task(
       id: 't3',
@@ -32,7 +32,6 @@ abstract final class MockTasks {
       moment: TaskMoment.morning,
       time: '8:45',
       points: 1,
-      memberId: 'lea',
     ),
     Task(
       id: 't4',
@@ -59,7 +58,7 @@ abstract final class MockTasks {
       time: '19:00',
       recurrence: TaskRecurrence.thriceDaily,
       points: 1,
-      memberId: 'lea',
+      isRotating: true,
     ),
     Task(
       id: 't7',
