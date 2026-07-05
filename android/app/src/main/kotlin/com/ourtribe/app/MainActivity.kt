@@ -1,4 +1,4 @@
-package com.example.family_flow
+package com.ourtribe.app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.family_flow"
+    namespace = "com.ourtribe.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.family_flow"
+        applicationId = "com.ourtribe.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -35,6 +35,20 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+
+    // Environnements dev / prod (flavor Flutter : --flavor dev|prod).
+    flavorDimensions += "env"
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            applicationIdSuffix = ".dev"
+            resValue("string", "app_name", "Our Tribe Dev")
+        }
+        create("prod") {
+            dimension = "env"
+            resValue("string", "app_name", "Our Tribe")
         }
     }
 }

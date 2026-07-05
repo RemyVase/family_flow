@@ -28,8 +28,8 @@ class AppConfig {
     _instance = AppConfig._(
       environment: environment,
       appName: switch (environment) {
-        Environment.dev => 'Family Flow (DEV)',
-        Environment.prod => 'Family Flow',
+        Environment.dev => 'Our Tribe (DEV)',
+        Environment.prod => 'Our Tribe',
       },
     );
     if (kDebugMode) {

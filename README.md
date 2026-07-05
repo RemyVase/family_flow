@@ -1,6 +1,6 @@
-# family_flow
+# Our Tribe
 
-A new Flutter project.
+L'app de la tribu. Projet Flutter avec deux environnements (dev / prod).
 
 ## Getting Started
 

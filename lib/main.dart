@@ -5,7 +5,7 @@
 //   - lib/main_prod.dart (environnement prod)
 //
 // Par commodité, `flutter run` sans cible démarre en mode dev.
-// Utilise les configurations du launch.json ("Family Flow dev" / "prod").
+// Utilise les configurations du launch.json ("Our Tribe (dev)" / "(prod)").
 import 'main_dev.dart' as dev;
 
 void main() => dev.main();

@@ -2,34 +2,34 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Family Flow (dev)",
+      "name": "Our Tribe (dev)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_dev.dart",
-      "args": ["--dart-define=ENV=dev"]
+      "args": ["--flavor", "dev"]
     },
     {
-      "name": "Family Flow (dev · profile)",
+      "name": "Our Tribe (dev · profile)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_dev.dart",
       "flutterMode": "profile",
-      "args": ["--dart-define=ENV=dev"]
+      "args": ["--flavor", "dev"]
     },
     {
-      "name": "Family Flow (prod)",
+      "name": "Our Tribe (prod)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_prod.dart",
-      "args": ["--dart-define=ENV=prod"]
+      "args": ["--flavor", "prod"]
     },
     {
-      "name": "Family Flow (prod · release)",
+      "name": "Our Tribe (prod · release)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main_prod.dart",
       "flutterMode": "release",
-      "args": ["--dart-define=ENV=prod"]
+      "args": ["--flavor", "prod"]
     }
   ]
 }

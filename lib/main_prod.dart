@@ -1,10 +1,5 @@
-import 'package:flutter/material.dart';
-
-import 'app.dart';
+import 'bootstrap.dart';
 import 'config/app_environment.dart';
 
 /// Point d'entrée pour l'environnement de production.
-void main() {
-  AppConfig.init(Environment.prod);
-  runApp(const FamilyFlowApp());
-}
+void main() => bootstrap(Environment.prod);

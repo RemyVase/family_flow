@@ -23,7 +23,7 @@ class FamilyFlowApp extends StatelessWidget {
           child: child ?? const SizedBox.shrink(),
         );
       },
-      home: const MyHomePage(title: 'Family Flow'),
+      home: const MyHomePage(title: 'Our Tribe'),
     );
   }
 }
