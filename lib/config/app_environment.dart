@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 
-/// Les environnements supportés par l'application.
+/// The environments supported by the application.
 enum Environment { dev, prod }
 
-/// Configuration globale de l'application, dépendante de l'environnement.
+/// Global application configuration, depending on the environment.
 ///
-/// Initialisée une seule fois au démarrage via [AppConfig.init] (appelé par
-/// les points d'entrée `main_dev.dart` / `main_prod.dart`).
+/// Initialized once at startup via [AppConfig.init] (called by the
+/// `main_dev.dart` / `main_prod.dart` entry points).
 class AppConfig {
   AppConfig._({
     required this.environment,
@@ -18,9 +18,9 @@ class AppConfig {
 
   static AppConfig? _instance;
 
-  /// L'instance courante. Doit être initialisée avant utilisation.
+  /// The current instance. Must be initialized before use.
   static AppConfig get instance {
-    assert(_instance != null, 'AppConfig.init() doit être appelé au démarrage.');
+    assert(_instance != null, 'AppConfig.init() must be called at startup.');
     return _instance!;
   }
 
@@ -33,7 +33,7 @@ class AppConfig {
       },
     );
     if (kDebugMode) {
-      debugPrint('AppConfig initialisé pour: ${environment.name}');
+      debugPrint('AppConfig initialized for: ${environment.name}');
     }
   }
 

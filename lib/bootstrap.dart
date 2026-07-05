@@ -4,9 +4,9 @@ import 'app.dart';
 import 'config/app_environment.dart';
 import 'firebase/firebase_bootstrap.dart';
 
-/// Séquence de démarrage commune aux deux environnements.
+/// Startup sequence shared by both environments.
 ///
-/// Appelée par `main_dev.dart` et `main_prod.dart`.
+/// Called by `main_dev.dart` and `main_prod.dart`.
 Future<void> bootstrap(Environment env) async {
   WidgetsFlutterBinding.ensureInitialized();
   AppConfig.init(env);
