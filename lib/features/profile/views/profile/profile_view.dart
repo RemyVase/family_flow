@@ -9,6 +9,7 @@ import 'package:our_tribe/features/profile/views/profile/widgets/profile_setting
 import 'package:our_tribe/features/profile/views/profile/widgets/profile_user_card.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/services/auth_service.dart';
+import 'package:our_tribe/services/notification_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/icons/app_icon.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
@@ -30,6 +31,7 @@ class ProfileView extends StatelessWidget {
       create: (context) => ProfileController(
         context.read<TribeService>(),
         context.read<AuthService>(),
+        context.read<NotificationService>(),
       ),
       child: const _ProfileBody(),
     );

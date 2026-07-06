@@ -5,6 +5,7 @@ import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/routing/app_route.dart';
 import 'package:our_tribe/routing/app_router.dart';
 import 'package:our_tribe/services/auth_service.dart';
+import 'package:our_tribe/services/notification_service.dart';
 import 'package:our_tribe/services/task_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/widgets/app_tab_bar.dart';
@@ -18,6 +19,9 @@ Widget buildTestApp(TestStack stack, GoRouter router) {
       ChangeNotifierProvider<AuthService>.value(value: stack.authService),
       ChangeNotifierProvider<TribeService>.value(value: stack.tribeService),
       ChangeNotifierProvider<TaskService>.value(value: stack.taskService),
+      ChangeNotifierProvider<NotificationService>.value(
+        value: stack.notificationService,
+      ),
     ],
     child: MaterialApp.router(
       routerConfig: router,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:our_tribe/features/notifications/models/reminder_lead_time.dart';
 import 'package:our_tribe/features/settings/views/notifications/notifications_controller.dart';
 import 'package:our_tribe/features/settings/widgets/setting_row.dart';
 import 'package:our_tribe/features/settings/widgets/settings_card.dart';

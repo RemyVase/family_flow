@@ -28,4 +28,16 @@ class FirestoreUserRepository implements UserRepository {
       // Through the typed reference on purpose: snapshot listeners are
       // keyed by converter type in the fake backend used in tests.
       _users.doc(userId).update({'tribeId': tribeId});
+
+  @override
+  Future<void> addFcmToken(String userId, String token) =>
+      _users.doc(userId).update({
+        'fcmTokens': FieldValue.arrayUnion([token]),
+      });
+
+  @override
+  Future<void> removeFcmToken(String userId, String token) =>
+      _users.doc(userId).update({
+        'fcmTokens': FieldValue.arrayRemove([token]),
+      });
 }

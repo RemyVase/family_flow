@@ -1,72 +1,105 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+import 'package:our_tribe/features/notifications/models/notification_prefs.dart';
+import 'package:our_tribe/features/notifications/models/reminder_lead_time.dart';
+import 'package:our_tribe/services/notification_service.dart';
+import 'package:our_tribe/shared/utils/error_reporter.dart';
 
-/// Lead time of task reminders.
-enum ReminderLeadTime { onTime, fifteenMinutes, thirtyMinutes, oneHour }
-
-/// State of the notifications settings screen. Local state only for now
-/// (design phase, nothing persisted).
+/// State of the notifications settings screen: an editable copy of the
+/// persisted [NotificationPrefs], plus the system permission handling.
 class NotificationsController extends ChangeNotifier {
-  bool _masterEnabled = true;
-  bool get masterEnabled => _masterEnabled;
+  NotificationsController(this._notificationService)
+    : _prefs = _notificationService.prefs {
+    _notificationService.addListener(_onServiceChanged);
+  }
 
-  bool _remindTasks = true;
-  bool get remindTasks => _remindTasks;
+  final NotificationService _notificationService;
 
-  ReminderLeadTime _leadTime = ReminderLeadTime.thirtyMinutes;
-  ReminderLeadTime get leadTime => _leadTime;
+  NotificationPrefs _prefs;
+  bool _hasEdits = false;
 
-  bool _morningSummary = true;
-  bool get morningSummary => _morningSummary;
+  bool _isSaving = false;
+  bool get isSaving => _isSaving;
 
-  bool _eveningReminder = true;
-  bool get eveningReminder => _eveningReminder;
+  /// True when the user refused notifications in the iOS settings; the
+  /// screen shows a hint instead of silently doing nothing.
+  bool get isSystemDenied => _notificationService.isSystemDenied;
 
-  bool _overdueAlert = true;
-  bool get overdueAlert => _overdueAlert;
+  bool get masterEnabled => _prefs.masterEnabled;
+  bool get remindTasks => _prefs.remindTasks;
+  ReminderLeadTime get leadTime => _prefs.leadTime;
+  bool get morningSummary => _prefs.morningSummary;
+  bool get eveningReminder => _prefs.eveningReminder;
+  bool get overdueAlert => _prefs.overdueAlert;
+  bool get tribeLifeAlerts => _prefs.tribeLifeAlerts;
+  bool get quietNight => _prefs.quietNight;
 
-  bool _tribeLifeAlerts = true;
-  bool get tribeLifeAlerts => _tribeLifeAlerts;
+  /// Follow the persisted prefs until the user starts editing.
+  void _onServiceChanged() {
+    if (!_hasEdits) _prefs = _notificationService.prefs;
+    notifyListeners();
+  }
 
-  bool _quietNight = true;
-  bool get quietNight => _quietNight;
+  void _update(NotificationPrefs prefs) {
+    _prefs = prefs;
+    _hasEdits = true;
+    notifyListeners();
+  }
 
+  /// Turning the master switch on triggers the system permission prompt
+  /// when it was never asked.
   void setMasterEnabled(bool value) {
-    _masterEnabled = value;
-    notifyListeners();
+    _update(_prefs.copyWith(masterEnabled: value));
+    if (value) {
+      unawaited(
+        _notificationService
+            .requestPermission()
+            .then<void>((_) {})
+            .onError(reportError),
+      );
+    }
   }
 
-  void setRemindTasks(bool value) {
-    _remindTasks = value;
+  void setRemindTasks(bool value) =>
+      _update(_prefs.copyWith(remindTasks: value));
+
+  void setLeadTime(ReminderLeadTime value) =>
+      _update(_prefs.copyWith(leadTime: value));
+
+  void setMorningSummary(bool value) =>
+      _update(_prefs.copyWith(morningSummary: value));
+
+  void setEveningReminder(bool value) =>
+      _update(_prefs.copyWith(eveningReminder: value));
+
+  void setOverdueAlert(bool value) =>
+      _update(_prefs.copyWith(overdueAlert: value));
+
+  void setTribeLifeAlerts(bool value) =>
+      _update(_prefs.copyWith(tribeLifeAlerts: value));
+
+  void setQuietNight(bool value) => _update(_prefs.copyWith(quietNight: value));
+
+  /// Persists the preferences. Returns false on error.
+  Future<bool> save() async {
+    _isSaving = true;
     notifyListeners();
+    try {
+      await _notificationService.savePrefs(_prefs);
+      return true;
+    } catch (e, st) {
+      await reportError(e, st);
+      return false;
+    } finally {
+      _isSaving = false;
+      notifyListeners();
+    }
   }
 
-  void setLeadTime(ReminderLeadTime value) {
-    _leadTime = value;
-    notifyListeners();
-  }
-
-  void setMorningSummary(bool value) {
-    _morningSummary = value;
-    notifyListeners();
-  }
-
-  void setEveningReminder(bool value) {
-    _eveningReminder = value;
-    notifyListeners();
-  }
-
-  void setOverdueAlert(bool value) {
-    _overdueAlert = value;
-    notifyListeners();
-  }
-
-  void setTribeLifeAlerts(bool value) {
-    _tribeLifeAlerts = value;
-    notifyListeners();
-  }
-
-  void setQuietNight(bool value) {
-    _quietNight = value;
-    notifyListeners();
+  @override
+  void dispose() {
+    _notificationService.removeListener(_onServiceChanged);
+    super.dispose();
   }
 }

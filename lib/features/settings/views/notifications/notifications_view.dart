@@ -7,6 +7,7 @@ import 'package:our_tribe/features/settings/widgets/setting_row.dart';
 import 'package:our_tribe/features/settings/widgets/settings_card.dart';
 import 'package:our_tribe/features/settings/widgets/settings_note.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
+import 'package:our_tribe/services/notification_service.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
 import 'package:our_tribe/shared/widgets/primary_button.dart';
 import 'package:our_tribe/shared/widgets/screen_header.dart';
@@ -25,7 +26,8 @@ class NotificationsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => NotificationsController(),
+      create: (context) =>
+          NotificationsController(context.read<NotificationService>()),
       child: const _NotificationsBody(),
     );
   }
@@ -33,6 +35,11 @@ class NotificationsView extends StatelessWidget {
 
 class _NotificationsBody extends StatelessWidget {
   const _NotificationsBody();
+
+  Future<void> _save(BuildContext context) async {
+    final saved = await context.read<NotificationsController>().save();
+    if (saved && context.mounted) context.pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +81,14 @@ class _NotificationsBody extends StatelessWidget {
                         ),
                       ],
                     ),
+                    if (controller.isSystemDenied &&
+                        controller.masterEnabled) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      SettingsNote(
+                        icon: AppIconData.bell,
+                        text: l10n.notificationsDeniedHint,
+                      ),
+                    ],
                     _DimWhenPaused(
                       isPaused: !controller.masterEnabled,
                       child: Column(
@@ -140,7 +155,7 @@ class _NotificationsBody extends StatelessWidget {
                 child: PrimaryButton(
                   label: l10n.saveButton,
                   leadingIcon: AppIconData.check,
-                  onPressed: () => context.pop(),
+                  onPressed: controller.isSaving ? null : () => _save(context),
                 ),
               ),
             ),

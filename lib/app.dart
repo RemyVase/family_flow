@@ -5,6 +5,10 @@ import 'package:our_tribe/features/auth/repositories/auth_repository.dart';
 import 'package:our_tribe/features/auth/repositories/firebase_auth_repository.dart';
 import 'package:our_tribe/features/auth/repositories/firestore_user_repository.dart';
 import 'package:our_tribe/features/auth/repositories/user_repository.dart';
+import 'package:our_tribe/features/notifications/repositories/firebase_push_messaging_repository.dart';
+import 'package:our_tribe/features/notifications/repositories/firestore_notification_prefs_repository.dart';
+import 'package:our_tribe/features/notifications/repositories/notification_prefs_repository.dart';
+import 'package:our_tribe/features/notifications/repositories/push_messaging_repository.dart';
 import 'package:our_tribe/features/tasks/repositories/firestore_task_repository.dart';
 import 'package:our_tribe/features/tasks/repositories/task_repository.dart';
 import 'package:our_tribe/features/tribe/repositories/firestore_tribe_repository.dart';
@@ -13,6 +17,7 @@ import 'package:our_tribe/firebase/firebase_services.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/routing/app_router.dart';
 import 'package:our_tribe/services/auth_service.dart';
+import 'package:our_tribe/services/notification_service.dart';
 import 'package:our_tribe/services/task_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/widgets/dev_banner.dart';
@@ -40,6 +45,14 @@ class OurTribeApp extends StatelessWidget {
         Provider<TaskRepository>(
           create: (_) => FirestoreTaskRepository(FirebaseServices.firestore),
         ),
+        Provider<PushMessagingRepository>(
+          create: (_) =>
+              FirebasePushMessagingRepository(FirebaseServices.messaging),
+        ),
+        Provider<NotificationPrefsRepository>(
+          create: (_) =>
+              FirestoreNotificationPrefsRepository(FirebaseServices.firestore),
+        ),
         ChangeNotifierProvider<AuthService>(
           create: (c) =>
               AuthService(c.read<AuthRepository>(), c.read<UserRepository>()),
@@ -52,6 +65,17 @@ class OurTribeApp extends StatelessWidget {
           create: (c) => TaskService(
             c.read<TaskRepository>(),
             c.read<TribeService>(),
+            c.read<AuthService>(),
+          ),
+        ),
+        // Not lazy: the device token must be registered as soon as a
+        // signed-in user opens the app, not when a screen first reads it.
+        ChangeNotifierProvider<NotificationService>(
+          lazy: false,
+          create: (c) => NotificationService(
+            c.read<PushMessagingRepository>(),
+            c.read<NotificationPrefsRepository>(),
+            c.read<UserRepository>(),
             c.read<AuthService>(),
           ),
         ),

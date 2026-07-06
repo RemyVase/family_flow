@@ -20,6 +20,7 @@ void main() {
         final controller = ProfileController(
           stack.tribeService,
           stack.authService,
+          stack.notificationService,
         );
 
         expect(controller.isChief, isTrue);
@@ -48,6 +49,7 @@ void main() {
         final controller = ProfileController(
           stack.tribeService,
           stack.authService,
+          stack.notificationService,
         );
 
         expect(controller.isChief, isFalse);
@@ -62,6 +64,7 @@ void main() {
       final controller = ProfileController(
         stack.tribeService,
         stack.authService,
+        stack.notificationService,
       );
 
       controller.toggleEditing('tom');
@@ -79,6 +82,7 @@ void main() {
       final controller = ProfileController(
         stack.tribeService,
         stack.authService,
+        stack.notificationService,
       );
 
       controller.removeMember('tom');
@@ -92,6 +96,7 @@ void main() {
       final controller = ProfileController(
         stack.tribeService,
         stack.authService,
+        stack.notificationService,
       );
 
       final left = await controller.leaveTribe(newChiefId: 'tom');
@@ -106,6 +111,7 @@ void main() {
       final controller = ProfileController(
         stack.tribeService,
         stack.authService,
+        stack.notificationService,
       );
 
       controller.signOut();

@@ -236,5 +236,6 @@
   "authErrorWeakPassword": "The password is too short (6 characters minimum).",
   "authErrorInvalidCredentials": "Incorrect e-mail or password.",
   "authErrorNetwork": "No connection. Check your network and try again.",
-  "authErrorUnknown": "Something went wrong. Try again in a moment."
+  "authErrorUnknown": "Something went wrong. Try again in a moment.",
+  "notificationsDeniedHint": "Notifications are refused in the iOS settings. Enable them in Settings > Our Tribe > Notifications."
 }

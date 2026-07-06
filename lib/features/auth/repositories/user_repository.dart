@@ -9,4 +9,10 @@ abstract class UserRepository {
 
   /// Points the user at their current tribe (null when leaving it).
   Future<void> setTribeId(String userId, String? tribeId);
+
+  /// Registers a device push token on the user (`fcmTokens` array).
+  Future<void> addFcmToken(String userId, String token);
+
+  /// Removes a device push token (sign-out, token rotation).
+  Future<void> removeFcmToken(String userId, String token);
 }

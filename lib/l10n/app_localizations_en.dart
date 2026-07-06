@@ -777,4 +777,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authErrorUnknown => 'Something went wrong. Try again in a moment.';
+
+  @override
+  String get notificationsDeniedHint =>
+      'Notifications are refused in the iOS settings. Enable them in Settings > Our Tribe > Notifications.';
 }

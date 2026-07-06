@@ -779,4 +779,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get authErrorUnknown =>
       'Une erreur est survenue. Réessaie dans un instant.';
+
+  @override
+  String get notificationsDeniedHint =>
+      'Les notifications sont refusées dans les réglages iOS. Active-les dans Réglages > Our Tribe > Notifications.';
 }

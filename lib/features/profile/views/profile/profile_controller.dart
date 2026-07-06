@@ -3,16 +3,22 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:our_tribe/services/auth_service.dart';
+import 'package:our_tribe/services/notification_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/utils/error_reporter.dart';
 
 /// State of the profile screen: member list interactions (color palette,
 /// removal), the current user's role, sign-out and leaving the tribe.
 class ProfileController extends ChangeNotifier {
-  ProfileController(this._tribeService, this._authService);
+  ProfileController(
+    this._tribeService,
+    this._authService,
+    this._notificationService,
+  );
 
   final TribeService _tribeService;
   final AuthService _authService;
+  final NotificationService _notificationService;
 
   String? _editingMemberId;
   String? get editingMemberId => _editingMemberId;
@@ -57,8 +63,15 @@ class ProfileController extends ChangeNotifier {
     }
   }
 
-  /// Signs out; the router's auth guard returns to onboarding.
+  /// Signs out; the router's auth guard returns to onboarding. The device
+  /// push token is detached first, while the user can still write to
+  /// their profile.
   void signOut() {
-    unawaited(_authService.signOut().onError(reportError));
+    unawaited(
+      _notificationService
+          .unregisterToken()
+          .then((_) => _authService.signOut())
+          .onError(reportError),
+    );
   }
 }

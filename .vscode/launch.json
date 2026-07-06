@@ -9,6 +9,18 @@
       "args": ["--flavor", "dev"]
     },
     {
+      "name": "Our Tribe (dev · simulateur + émulateurs Firebase)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_dev.dart",
+      "deviceId": "iPhone 16e",
+      "args": [
+        "--flavor",
+        "dev",
+        "--dart-define=USE_FIREBASE_EMULATORS=true"
+      ]
+    },
+    {
       "name": "Our Tribe (dev · profile)",
       "request": "launch",
       "type": "dart",

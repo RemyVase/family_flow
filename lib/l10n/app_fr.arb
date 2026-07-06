@@ -434,5 +434,6 @@
   "authErrorWeakPassword": "Le mot de passe est trop court (6 caractères minimum).",
   "authErrorInvalidCredentials": "E-mail ou mot de passe incorrect.",
   "authErrorNetwork": "Pas de connexion. Vérifie ton réseau et réessaie.",
-  "authErrorUnknown": "Une erreur est survenue. Réessaie dans un instant."
+  "authErrorUnknown": "Une erreur est survenue. Réessaie dans un instant.",
+  "notificationsDeniedHint": "Les notifications sont refusées dans les réglages iOS. Active-les dans Réglages > Our Tribe > Notifications."
 }

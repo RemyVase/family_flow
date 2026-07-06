@@ -50,6 +50,12 @@ service cloud.firestore {
         && request.resource.data.email is string;
       allow update: if isOwner(userId);
       allow delete: if false; // account deletion handled server-side
+
+      // Per-user settings (notification preferences, …). Owner-only;
+      // notification senders read them with the Admin SDK.
+      match /settings/{settingId} {
+        allow read, write: if isOwner(userId);
+      }
     }
 
     // -----------------------------------------------------------------

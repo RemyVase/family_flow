@@ -1477,6 +1477,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Une erreur est survenue. Réessaie dans un instant.'**
   String get authErrorUnknown;
+
+  /// No description provided for @notificationsDeniedHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les notifications sont refusées dans les réglages iOS. Active-les dans Réglages > Our Tribe > Notifications.'**
+  String get notificationsDeniedHint;
 }
 
 class _AppLocalizationsDelegate
