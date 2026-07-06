@@ -3,21 +3,22 @@ import 'package:go_router/go_router.dart';
 import 'package:our_tribe/features/onboarding/widgets/onboarding_scaffold.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/routing/app_route.dart';
+import 'package:our_tribe/services/auth_service.dart';
 import 'package:our_tribe/shared/icons/app_icon.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
 import 'package:our_tribe/shared/widgets/primary_button.dart';
 import 'package:our_tribe/shared/widgets/tribe_mark.dart';
 import 'package:our_tribe/theme/app_text_styles.dart';
+import 'package:provider/provider.dart';
 
 /// Final onboarding step: the tribe is ready.
 class OnboardingDoneView extends StatelessWidget {
-  const OnboardingDoneView({super.key, required this.firstName});
-
-  final String firstName;
+  const OnboardingDoneView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final firstName = context.watch<AuthService>().firstName;
 
     return OnboardingScaffold(
       centered: true,

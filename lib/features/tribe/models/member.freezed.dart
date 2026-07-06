@@ -11,16 +11,21 @@ part of 'member.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$Member {
 
- String get id; String get name; Color get color; bool get isChief; bool get isCurrentUser; int get weeklyPoints; int get weeklyTasksDone;
+ String get id; String get name;@ColorIntConverter() Color get color; bool get isChief;/// Whether this member is the signed-in user. Derived from the auth uid
+/// when mapping snapshots — never stored in Firestore.
+@JsonKey(includeFromJson: false, includeToJson: false) bool get isCurrentUser; int get weeklyPoints; int get weeklyTasksDone;
 /// Create a copy of Member
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $MemberCopyWith<Member> get copyWith => _$MemberCopyWithImpl<Member>(this as Member, _$identity);
 
+  /// Serializes this Member to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
@@ -28,7 +33,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is Member&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&(identical(other.isChief, isChief) || other.isChief == isChief)&&(identical(other.isCurrentUser, isCurrentUser) || other.isCurrentUser == isCurrentUser)&&(identical(other.weeklyPoints, weeklyPoints) || other.weeklyPoints == weeklyPoints)&&(identical(other.weeklyTasksDone, weeklyTasksDone) || other.weeklyTasksDone == weeklyTasksDone));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,id,name,color,isChief,isCurrentUser,weeklyPoints,weeklyTasksDone);
 
@@ -45,7 +50,7 @@ abstract mixin class $MemberCopyWith<$Res>  {
   factory $MemberCopyWith(Member value, $Res Function(Member) _then) = _$MemberCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, Color color, bool isChief, bool isCurrentUser, int weeklyPoints, int weeklyTasksDone
+ String id, String name,@ColorIntConverter() Color color, bool isChief,@JsonKey(includeFromJson: false, includeToJson: false) bool isCurrentUser, int weeklyPoints, int weeklyTasksDone
 });
 
 
@@ -156,7 +161,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  Color color,  bool isChief,  bool isCurrentUser,  int weeklyPoints,  int weeklyTasksDone)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name, @ColorIntConverter()  Color color,  bool isChief, @JsonKey(includeFromJson: false, includeToJson: false)  bool isCurrentUser,  int weeklyPoints,  int weeklyTasksDone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Member() when $default != null:
 return $default(_that.id,_that.name,_that.color,_that.isChief,_that.isCurrentUser,_that.weeklyPoints,_that.weeklyTasksDone);case _:
@@ -177,7 +182,7 @@ return $default(_that.id,_that.name,_that.color,_that.isChief,_that.isCurrentUse
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  Color color,  bool isChief,  bool isCurrentUser,  int weeklyPoints,  int weeklyTasksDone)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name, @ColorIntConverter()  Color color,  bool isChief, @JsonKey(includeFromJson: false, includeToJson: false)  bool isCurrentUser,  int weeklyPoints,  int weeklyTasksDone)  $default,) {final _that = this;
 switch (_that) {
 case _Member():
 return $default(_that.id,_that.name,_that.color,_that.isChief,_that.isCurrentUser,_that.weeklyPoints,_that.weeklyTasksDone);case _:
@@ -197,7 +202,7 @@ return $default(_that.id,_that.name,_that.color,_that.isChief,_that.isCurrentUse
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  Color color,  bool isChief,  bool isCurrentUser,  int weeklyPoints,  int weeklyTasksDone)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name, @ColorIntConverter()  Color color,  bool isChief, @JsonKey(includeFromJson: false, includeToJson: false)  bool isCurrentUser,  int weeklyPoints,  int weeklyTasksDone)?  $default,) {final _that = this;
 switch (_that) {
 case _Member() when $default != null:
 return $default(_that.id,_that.name,_that.color,_that.isChief,_that.isCurrentUser,_that.weeklyPoints,_that.weeklyTasksDone);case _:
@@ -209,17 +214,19 @@ return $default(_that.id,_that.name,_that.color,_that.isChief,_that.isCurrentUse
 }
 
 /// @nodoc
-
+@JsonSerializable()
 
 class _Member extends Member {
-  const _Member({required this.id, required this.name, required this.color, this.isChief = false, this.isCurrentUser = false, this.weeklyPoints = 0, this.weeklyTasksDone = 0}): super._();
-  
+  const _Member({required this.id, required this.name, @ColorIntConverter() required this.color, this.isChief = false, @JsonKey(includeFromJson: false, includeToJson: false) this.isCurrentUser = false, this.weeklyPoints = 0, this.weeklyTasksDone = 0}): super._();
+  factory _Member.fromJson(Map<String, dynamic> json) => _$MemberFromJson(json);
 
 @override final  String id;
 @override final  String name;
-@override final  Color color;
+@override@ColorIntConverter() final  Color color;
 @override@JsonKey() final  bool isChief;
-@override@JsonKey() final  bool isCurrentUser;
+/// Whether this member is the signed-in user. Derived from the auth uid
+/// when mapping snapshots — never stored in Firestore.
+@override@JsonKey(includeFromJson: false, includeToJson: false) final  bool isCurrentUser;
 @override@JsonKey() final  int weeklyPoints;
 @override@JsonKey() final  int weeklyTasksDone;
 
@@ -229,14 +236,17 @@ class _Member extends Member {
 @pragma('vm:prefer-inline')
 _$MemberCopyWith<_Member> get copyWith => __$MemberCopyWithImpl<_Member>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$MemberToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _Member&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&(identical(other.isChief, isChief) || other.isChief == isChief)&&(identical(other.isCurrentUser, isCurrentUser) || other.isCurrentUser == isCurrentUser)&&(identical(other.weeklyPoints, weeklyPoints) || other.weeklyPoints == weeklyPoints)&&(identical(other.weeklyTasksDone, weeklyTasksDone) || other.weeklyTasksDone == weeklyTasksDone));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,id,name,color,isChief,isCurrentUser,weeklyPoints,weeklyTasksDone);
 
@@ -253,7 +263,7 @@ abstract mixin class _$MemberCopyWith<$Res> implements $MemberCopyWith<$Res> {
   factory _$MemberCopyWith(_Member value, $Res Function(_Member) _then) = __$MemberCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, Color color, bool isChief, bool isCurrentUser, int weeklyPoints, int weeklyTasksDone
+ String id, String name,@ColorIntConverter() Color color, bool isChief,@JsonKey(includeFromJson: false, includeToJson: false) bool isCurrentUser, int weeklyPoints, int weeklyTasksDone
 });
 
 

@@ -1,79 +1,93 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:our_tribe/features/tasks/models/task.dart';
 import 'package:our_tribe/features/tasks/models/task_moment.dart';
-import 'package:our_tribe/services/task_service.dart';
+
+import '../helpers/test_stack.dart';
+
+const _tasks = [
+  Task(
+    id: 'a',
+    name: 'Unassigned task',
+    moment: TaskMoment.morning,
+    time: '8:00',
+    points: 2,
+  ),
+  Task(
+    id: 'b',
+    name: 'Assigned task',
+    moment: TaskMoment.evening,
+    time: '19:00',
+    points: 3,
+    memberId: 'lea',
+  ),
+];
 
 void main() {
-  const tasks = [
-    Task(
-      id: 'a',
-      name: 'Assigned task',
-      moment: TaskMoment.morning,
-      time: '8:00',
-      points: 2,
-      memberId: 'lea',
-    ),
-    Task(
-      id: 'b',
-      name: 'Unassigned task',
-      moment: TaskMoment.evening,
-      time: '19:00',
-      points: 1,
-    ),
-  ];
-
   group('TaskService', () {
-    test('should list only pending unassigned tasks', () {
-      final service = TaskService(tasks: tasks);
+    test(
+      'should stream the tribe tasks and expose the unassigned ones',
+      () async {
+        final stack = await TestStack.signedInWithTribe(tasks: _tasks);
 
-      expect(service.unassignedTasks.single.id, 'b');
+        expect(stack.taskService.tasks.length, 2);
+        expect(stack.taskService.unassignedTasks.single.id, 'a');
+      },
+    );
+
+    test('should toggle a task and credit the assignee counters', () async {
+      final stack = await TestStack.signedInWithTribe(tasks: _tasks);
+
+      await stack.taskService.toggleTask('b');
+      await pumpEventQueue();
+
+      expect(stack.taskService.taskById('b')!.isDone, isTrue);
+      final lea = stack.tribeService.memberById('lea');
+      expect(lea.weeklyPoints, 26 + 3);
+      expect(lea.weeklyTasksDone, 11 + 1);
     });
 
-    test('should toggle a task and notify listeners', () {
-      final service = TaskService(tasks: tasks);
-      var notified = false;
-      service.addListener(() => notified = true);
+    test('should debit the counters when a task is unchecked', () async {
+      final stack = await TestStack.signedInWithTribe(tasks: _tasks);
 
-      service.toggleTask('a');
+      await stack.taskService.toggleTask('b');
+      await pumpEventQueue();
+      await stack.taskService.toggleTask('b');
+      await pumpEventQueue();
 
-      expect(service.tasks.first.isDone, isTrue);
-      expect(notified, isTrue);
+      expect(stack.taskService.taskById('b')!.isDone, isFalse);
+      final lea = stack.tribeService.memberById('lea');
+      expect(lea.weeklyPoints, 26);
+      expect(lea.weeklyTasksDone, 11);
     });
 
-    test('should move an assigned task out of the unassigned list', () {
-      final service = TaskService(tasks: tasks);
+    test('should assign an up-for-grabs task to a member', () async {
+      final stack = await TestStack.signedInWithTribe(tasks: _tasks);
 
-      service.assignTask('b', 'tom');
+      await stack.taskService.assignTask('a', 'tom');
+      await pumpEventQueue();
 
-      expect(service.unassignedTasks, isEmpty);
-      expect(service.tasks.last.memberId, 'tom');
+      expect(stack.taskService.taskById('a')!.memberId, 'tom');
+      expect(stack.taskService.unassignedTasks, isEmpty);
     });
 
-    test('should ignore toggling or assigning an unknown task', () {
-      final service = TaskService(tasks: tasks);
+    test('should create a task with a backend-assigned id', () async {
+      final stack = await TestStack.signedInWithTribe();
 
-      service.toggleTask('unknown');
-      service.assignTask('unknown', 'tom');
+      await stack.taskService.addTask(_tasks.first.copyWith(id: ''));
+      await pumpEventQueue();
 
-      expect(service.tasks.length, 2);
-      expect(service.unassignedTasks.length, 1);
+      final created = stack.taskService.tasks.single;
+      expect(created.id, isNotEmpty);
+      expect(created.name, 'Unassigned task');
     });
 
-    test('should append a created task', () {
-      final service = TaskService(tasks: tasks);
+    test('should clear the tasks after signing out', () async {
+      final stack = await TestStack.signedInWithTribe(tasks: _tasks);
 
-      service.addTask(
-        const Task(
-          id: 'c',
-          name: 'New task',
-          moment: TaskMoment.afternoon,
-          time: '17:00',
-          points: 3,
-        ),
-      );
+      stack.authRepository.setUser(null);
+      await pumpEventQueue();
 
-      expect(service.tasks.length, 3);
-      expect(service.unassignedTasks.length, 2);
+      expect(stack.taskService.tasks, isEmpty);
     });
   });
 }

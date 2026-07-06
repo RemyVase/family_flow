@@ -3,9 +3,16 @@ rules_version = '2';
 // Our Tribe — Firestore security rules.
 // Philosophy (see .claude/rules/firestore-security.md):
 //   - Default deny: nothing is accessible unless explicitly allowed.
-//   - Data is scoped to its family: only members of a family can access it.
+//   - Data is scoped to its tribe: only members of a tribe can access it.
 //   - Least privilege + validation on write.
 // Every new collection MUST get its own match block here, in the same change.
+//
+// Data model:
+//   users/{uid}                     — a user's own profile (firstName, email, tribeId)
+//   tribes/{tribeId}                — the tribe (name, ownerId, inviteCode, color)
+//   tribes/{tribeId}/members/{uid}  — membership, doc id == member uid
+//   tribes/{tribeId}/tasks/{taskId} — the tribe's tasks
+//   invites/{code}                  — public code → tribe lookup (tribeId, tribeName)
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -21,11 +28,16 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    // Is the signed-in user a member of this family?
-    // Membership is a document in families/{familyId}/members keyed by uid.
-    function isFamilyMember(familyId) {
+    // Is the signed-in user a member of this tribe?
+    function isTribeMember(tribeId) {
       return isSignedIn()
-        && exists(/databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid));
+        && exists(/databases/$(database)/documents/tribes/$(tribeId)/members/$(request.auth.uid));
+    }
+
+    // The tribe document as it will exist after this write commits
+    // (handles the creation batch where tribe + invite + member land together).
+    function tribeAfter(tribeId) {
+      return getAfter(/databases/$(database)/documents/tribes/$(tribeId));
     }
 
     // -----------------------------------------------------------------
@@ -33,40 +45,79 @@ service cloud.firestore {
     // -----------------------------------------------------------------
     match /users/{userId} {
       allow read: if isOwner(userId);
-      allow create, update: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && request.resource.data.firstName is string
+        && request.resource.data.email is string;
+      allow update: if isOwner(userId);
       allow delete: if false; // account deletion handled server-side
     }
 
     // -----------------------------------------------------------------
-    // families/{familyId} — the family and everything scoped to it.
+    // invites/{code} — public lookup of an invite code.
+    // `get` only (no `list`) so codes cannot be enumerated.
     // -----------------------------------------------------------------
-    match /families/{familyId} {
-      allow read: if isFamilyMember(familyId);
-      allow update, delete: if isFamilyMember(familyId);
-
-      // Creating a family: the creator must record themselves as owner.
-      // Becoming the FIRST member (bootstrap) and inviting others is a
-      // controlled flow — see the note in members/ below.
+    match /invites/{code} {
+      allow get: if isSignedIn();
+      allow list: if false;
+      // Created by the tribe owner in the tribe-creation batch.
       allow create: if isSignedIn()
-        && request.resource.data.ownerId == request.auth.uid;
+        && request.resource.data.tribeId is string
+        && tribeAfter(request.resource.data.tribeId).data.ownerId == request.auth.uid;
+      // Member-count refresh after a join/leave.
+      allow update: if isTribeMember(resource.data.tribeId)
+        && request.resource.data.tribeId == resource.data.tribeId
+        && request.resource.data.tribeName == resource.data.tribeName;
+      // Deleted when the last member deletes the tribe.
+      allow delete: if isTribeMember(resource.data.tribeId);
+    }
+
+    // -----------------------------------------------------------------
+    // tribes/{tribeId} — the tribe and everything scoped to it.
+    // -----------------------------------------------------------------
+    match /tribes/{tribeId} {
+      allow read: if isTribeMember(tribeId);
+      allow update, delete: if isTribeMember(tribeId);
+
+      // Creating a tribe: the creator must record themselves as owner and
+      // declare the invite code the invite document is keyed by.
+      allow create: if isSignedIn()
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.inviteCode is string;
 
       // Membership documents (doc id == member uid).
-      // Reads are limited to members. Writes are intentionally denied to the
-      // client: adding/removing members must go through a controlled flow
-      // (invite token validated in rules, or a Cloud Function using the Admin
-      // SDK) so a user cannot self-join an arbitrary family. Design this with
-      // the data model, then replace `if false` with the scoped condition.
       match /members/{memberId} {
-        allow read: if isFamilyMember(familyId);
-        allow write: if false; // TODO: gate via invite flow / Cloud Function
+        allow read: if isTribeMember(tribeId);
+
+        // Two ways in, both self-only (a user can never enrol someone else):
+        //   1. Founder bootstrap — the tribe lands in the same batch and
+        //      names the caller as owner.
+        //   2. Invited join — the member doc carries the joinCode field,
+        //      which must resolve to this very tribe.
+        allow create: if isOwner(memberId)
+          && (
+            tribeAfter(tribeId).data.ownerId == request.auth.uid
+            || get(/databases/$(database)/documents/invites/$(request.resource.data.joinCode)).data.tribeId == tribeId
+          );
+
+        // Color, name, points and chief handover. Tribe-scoped rather than
+        // self-only on purpose: completing a task credits the assignee's
+        // counters, and the chief edits colors / hands the role over.
+        allow update: if isTribeMember(tribeId);
+
+        // Self-leave, or removal by the tribe's chief.
+        allow delete: if isOwner(memberId)
+          || (isTribeMember(tribeId)
+            && get(/databases/$(database)/documents/tribes/$(tribeId)/members/$(request.auth.uid)).data.isChief == true);
       }
 
-      // Family-scoped tasks (example pattern from the project rule).
+      // The tribe's tasks.
       match /tasks/{taskId} {
-        allow read: if isFamilyMember(familyId);
-        allow create: if isFamilyMember(familyId)
-          && request.resource.data.familyId == familyId;
-        allow update, delete: if isFamilyMember(familyId);
+        allow read: if isTribeMember(tribeId);
+        allow create: if isTribeMember(tribeId)
+          && request.resource.data.name is string
+          && request.resource.data.points is int;
+        allow update, delete: if isTribeMember(tribeId);
       }
     }
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:our_tribe/features/onboarding/views/signin/signin_controller.dart';
+import 'package:our_tribe/features/onboarding/widgets/auth_error_text.dart';
 import 'package:our_tribe/features/onboarding/widgets/onboarding_scaffold.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
-import 'package:our_tribe/routing/app_route.dart';
+import 'package:our_tribe/services/auth_service.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
 import 'package:our_tribe/shared/widgets/app_text_field.dart';
 import 'package:our_tribe/shared/widgets/primary_button.dart';
@@ -19,7 +19,7 @@ class SigninView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => SigninController(),
+      create: (context) => SigninController(context.read<AuthService>()),
       child: const _SigninBody(),
     );
   }
@@ -62,14 +62,14 @@ class _SigninBody extends StatelessWidget {
               style: AppTextStyles.action.copyWith(fontSize: 14),
             ),
           ),
+          AuthErrorText(error: controller.error),
         ],
       ),
       footer: PrimaryButton(
         label: l10n.signinButton,
         trailingIcon: AppIconData.arrowRight,
-        onPressed: controller.canSignIn
-            ? () => context.go(AppRoute.home.path)
-            : null,
+        // On success the router's auth guard moves into the app.
+        onPressed: controller.canSignIn ? controller.submit : null,
       ),
     );
   }

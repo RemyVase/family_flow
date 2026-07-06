@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:our_tribe/features/tribe/models/mock_members.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/routing/app_route.dart';
+import 'package:our_tribe/services/auth_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/icons/app_icon.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
@@ -50,7 +50,7 @@ class ProfileUserCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  MockMembers.currentUserEmail,
+                  context.watch<AuthService>().email,
                   style: AppTextStyles.headerKicker,
                 ),
               ],

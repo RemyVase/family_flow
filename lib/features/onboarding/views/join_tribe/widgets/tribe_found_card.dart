@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:our_tribe/features/tribe/models/mock_members.dart';
+import 'package:our_tribe/features/tribe/models/tribe_invite.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/shared/icons/app_icon.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
@@ -11,11 +11,14 @@ import 'package:our_tribe/theme/app_text_styles.dart';
 
 /// Card confirming the tribe matched by the entered code (`.ob-found`).
 class TribeFoundCard extends StatelessWidget {
-  const TribeFoundCard({super.key});
+  const TribeFoundCard({super.key, required this.invite});
+
+  final TribeInvite invite;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final name = invite.tribeName;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -38,7 +41,7 @@ class TribeFoundCard extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Text(
-              MockMembers.tribeName.split(' ').last[0],
+              name.isEmpty ? '?' : name.split(' ').last[0].toUpperCase(),
               style: GoogleFonts.figtree(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
@@ -52,11 +55,11 @@ class TribeFoundCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  MockMembers.tribeName,
+                  name,
                   style: AppTextStyles.sectionTitle.copyWith(fontSize: 16),
                 ),
                 Text(
-                  l10n.membersCount(MockMembers.members.length),
+                  l10n.membersCount(invite.memberCount),
                   style: AppTextStyles.note.copyWith(
                     color: AppColors.inkTertiary,
                   ),

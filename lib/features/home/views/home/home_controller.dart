@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:our_tribe/features/tasks/models/task.dart';
 import 'package:our_tribe/features/tasks/models/task_moment.dart';
 import 'package:our_tribe/services/task_service.dart';
+import 'package:our_tribe/shared/utils/error_reporter.dart';
 
 /// Encouragement message shown on the progress card.
 enum HomeProgressMessage { start, keepGoing, almost, allDone }
@@ -43,7 +46,9 @@ class HomeController extends ChangeNotifier {
     return HomeProgressMessage.keepGoing;
   }
 
-  void toggleTask(String taskId) => _taskService.toggleTask(taskId);
+  void toggleTask(String taskId) {
+    unawaited(_taskService.toggleTask(taskId).onError(reportError));
+  }
 
   @override
   void dispose() {

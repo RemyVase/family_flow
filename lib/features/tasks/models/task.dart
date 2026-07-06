@@ -3,6 +3,7 @@ import 'package:our_tribe/features/tasks/models/task_moment.dart';
 import 'package:our_tribe/features/tasks/models/task_recurrence.dart';
 
 part 'task.freezed.dart';
+part 'task.g.dart';
 
 @freezed
 abstract class Task with _$Task {
@@ -25,6 +26,8 @@ abstract class Task with _$Task {
     @Default(false) bool hasPhoto,
     String? description,
   }) = _Task;
+
+  factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
 
   bool get isUnassigned => memberId == null;
 }

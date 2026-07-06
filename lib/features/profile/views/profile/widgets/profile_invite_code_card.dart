@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/icons/app_icon.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
+import 'package:our_tribe/shared/utils/invite_code_format.dart';
 import 'package:our_tribe/theme/app_colors.dart';
 import 'package:our_tribe/theme/app_spacing.dart';
 import 'package:our_tribe/theme/app_text_styles.dart';
 import 'package:provider/provider.dart';
 
-/// Invite code card of the profile (`.pf-code`).
+/// Invite code card of the profile (`.pf-code`). "Share" copies a
+/// ready-to-send invitation message to the clipboard.
 class ProfileInviteCodeCard extends StatelessWidget {
   const ProfileInviteCodeCard({super.key});
 
@@ -48,7 +51,7 @@ class ProfileInviteCodeCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  inviteCode,
+                  formatInviteCode(inviteCode),
                   style: GoogleFonts.figtree(
                     fontSize: 23,
                     fontWeight: FontWeight.w700,
@@ -60,27 +63,32 @@ class ProfileInviteCodeCard extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(11),
+          GestureDetector(
+            onTap: () => Clipboard.setData(
+              ClipboardData(text: l10n.inviteShareMessage(inviteCode)),
             ),
-            child: Row(
-              children: [
-                AppIcon(
-                  AppIconData.share,
-                  size: 16,
-                  color: AppColors.deepen(AppColors.accent, 0.2),
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                Text(
-                  l10n.shareButton,
-                  style: AppTextStyles.action.copyWith(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(11),
+              ),
+              child: Row(
+                children: [
+                  AppIcon(
+                    AppIconData.share,
+                    size: 16,
                     color: AppColors.deepen(AppColors.accent, 0.2),
                   ),
-                ),
-              ],
+                  const SizedBox(width: AppSpacing.xs),
+                  Text(
+                    l10n.shareButton,
+                    style: AppTextStyles.action.copyWith(
+                      color: AppColors.deepen(AppColors.accent, 0.2),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

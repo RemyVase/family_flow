@@ -133,11 +133,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get joinSubtitle => 'Enter the code your tribe shared with you.';
 
   @override
-  String pasteCode(String code) {
-    return 'Paste \"$code\"';
-  }
-
-  @override
   String membersCount(int count) {
     return '$count members';
   }
@@ -746,4 +741,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveButton => 'Save';
+
+  @override
+  String get copiedButton => 'Copied!';
+
+  @override
+  String inviteShareMessage(String code) {
+    return 'Join our tribe on Our Tribe with the code $code!';
+  }
+
+  @override
+  String get pasteFromClipboard => 'Paste from clipboard';
+
+  @override
+  String get joinCodeNotFound =>
+      'No tribe matches this code. Check it and try again.';
+
+  @override
+  String get authErrorEmailInUse =>
+      'An account already exists with this e-mail.';
+
+  @override
+  String get authErrorInvalidEmail => 'This e-mail address is not valid.';
+
+  @override
+  String get authErrorWeakPassword =>
+      'The password is too short (6 characters minimum).';
+
+  @override
+  String get authErrorInvalidCredentials => 'Incorrect e-mail or password.';
+
+  @override
+  String get authErrorNetwork =>
+      'No connection. Check your network and try again.';
+
+  @override
+  String get authErrorUnknown => 'Something went wrong. Try again in a moment.';
 }

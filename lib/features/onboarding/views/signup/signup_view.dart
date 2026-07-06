@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:our_tribe/features/onboarding/views/signup/signup_controller.dart';
+import 'package:our_tribe/features/onboarding/widgets/auth_error_text.dart';
 import 'package:our_tribe/features/onboarding/widgets/onboarding_note.dart';
 import 'package:our_tribe/features/onboarding/widgets/onboarding_scaffold.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
-import 'package:our_tribe/routing/app_route.dart';
+import 'package:our_tribe/services/auth_service.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
 import 'package:our_tribe/shared/widgets/app_text_field.dart';
 import 'package:our_tribe/shared/widgets/primary_button.dart';
@@ -19,7 +19,7 @@ class SignupView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => SignupController(),
+      create: (context) => SignupController(context.read<AuthService>()),
       child: const _SignupBody(),
     );
   }
@@ -59,17 +59,14 @@ class _SignupBody extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xl),
           OnboardingNote(text: l10n.signupNote, icon: AppIconData.heart),
+          AuthErrorText(error: controller.error),
         ],
       ),
       footer: PrimaryButton(
         label: l10n.continueButton,
         trailingIcon: AppIconData.arrowRight,
-        onPressed: controller.canContinue
-            ? () => context.push(
-                AppRoute.onboardingChoose.path,
-                extra: controller.firstName.trim(),
-              )
-            : null,
+        // On success the router's auth guard moves to the "choose" step.
+        onPressed: controller.canContinue ? controller.submit : null,
       ),
     );
   }

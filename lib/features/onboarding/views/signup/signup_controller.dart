@@ -1,7 +1,17 @@
 import 'package:flutter/foundation.dart';
+import 'package:our_tribe/features/auth/models/auth_exception.dart';
+import 'package:our_tribe/services/auth_service.dart';
+import 'package:our_tribe/shared/utils/error_reporter.dart';
 
-/// State of the signup form. No backend call yet (design-only phase).
+/// State of the signup form; account creation goes through [AuthService].
 class SignupController extends ChangeNotifier {
+  SignupController(this._authService);
+
+  /// Minimum password length accepted by the auth backend.
+  static const int minPasswordLength = 6;
+
+  final AuthService _authService;
+
   String _firstName = '';
   String get firstName => _firstName;
 
@@ -11,8 +21,17 @@ class SignupController extends ChangeNotifier {
   String _password = '';
   String get password => _password;
 
+  bool _isSubmitting = false;
+  bool get isSubmitting => _isSubmitting;
+
+  AuthError? _error;
+  AuthError? get error => _error;
+
   bool get canContinue =>
-      _firstName.trim().isNotEmpty && _email.trim().isNotEmpty;
+      !_isSubmitting &&
+      _firstName.trim().isNotEmpty &&
+      _email.trim().isNotEmpty &&
+      _password.length >= minPasswordLength;
 
   void setFirstName(String value) {
     _firstName = value;
@@ -27,5 +46,32 @@ class SignupController extends ChangeNotifier {
   void setPassword(String value) {
     _password = value;
     notifyListeners();
+  }
+
+  /// Creates the account; on success the router's auth guard moves the user
+  /// forward. Returns false and exposes [error] on failure.
+  Future<bool> submit() async {
+    if (!canContinue) return false;
+    _isSubmitting = true;
+    _error = null;
+    notifyListeners();
+    try {
+      await _authService.signUp(
+        firstName: _firstName,
+        email: _email,
+        password: _password,
+      );
+      return true;
+    } on AuthException catch (e) {
+      _error = e.error;
+      return false;
+    } catch (e, st) {
+      _error = AuthError.unknown;
+      await reportError(e, st);
+      return false;
+    } finally {
+      _isSubmitting = false;
+      notifyListeners();
+    }
   }
 }

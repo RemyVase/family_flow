@@ -15,9 +15,6 @@ import 'package:provider/provider.dart';
 class WeekTimeline extends StatelessWidget {
   const WeekTimeline({super.key});
 
-  /// Demo "now" time shown on the marker row.
-  static const String _nowTime = '14:02';
-
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<WeekController>();
@@ -26,8 +23,8 @@ class WeekTimeline extends StatelessWidget {
       children: [
         for (final task in controller.tasks) ...[
           _TimelineRow(task: task),
-          if (task.id == WeekController.nowAfterTaskId)
-            const _NowRow(time: _nowTime),
+          if (task.id == controller.nowAfterTaskId)
+            _NowRow(time: controller.nowTimeLabel),
         ],
       ],
     );

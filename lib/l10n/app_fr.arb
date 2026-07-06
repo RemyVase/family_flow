@@ -1,12 +1,9 @@
 {
   "@@locale": "fr",
-
   "appName": "Our Tribe",
-
   "welcomeTagline": "Les tâches de la maison,\ntoute la tribu au même endroit.",
   "createAccountButton": "Créer mon compte",
   "alreadyHaveAccount": "J'ai déjà un compte",
-
   "signupTitle": "Créer un compte",
   "signupSubtitle": "On commence par toi.",
   "firstNameLabel": "Ton prénom",
@@ -18,26 +15,22 @@
   "passwordDotsPlaceholder": "••••••••",
   "signupNote": "Ton prénom s'affichera sur tes tâches et dans le classement de la tribu.",
   "continueButton": "Continuer",
-
   "signinTitle": "Bon retour",
   "signinSubtitle": "Connecte-toi à ton compte.",
   "forgotPassword": "Mot de passe oublié ?",
   "signinButton": "Se connecter",
-
   "chooseTitle": "Ta tribu",
   "chooseSubtitle": "Rejoins la tribu de quelqu'un, ou crée la tienne.",
   "createTribeChoice": "Créer une tribu",
   "createTribeChoiceDetail": "Je démarre et j'invite les autres",
   "joinChoice": "Rejoindre avec un code",
   "joinChoiceDetail": "On m'a partagé un code d'invitation",
-
   "createTribeTitle": "Nouvelle tribu",
   "createTribeSubtitle": "Donne-lui un nom et une couleur.",
   "tribeNameLabel": "Nom de la tribu",
   "tribeNamePlaceholder": "Ex. La tribu Dubois",
   "tribeColorLabel": "Couleur de la tribu",
   "createTribeButton": "Créer la tribu",
-
   "tribeCreatedBadge": "Tribu créée",
   "inviteTitle": "Invite ta tribu",
   "inviteSubtitle": "Partage ce code. Chacun l'entre après son inscription.",
@@ -45,52 +38,116 @@
   "copyButton": "Copier",
   "shareButton": "Partager",
   "inviteNote": "Tu pourras toujours retrouver ce code dans ton profil.",
-
   "joinTitle": "Rejoindre",
   "joinSubtitle": "Entre le code que ta tribu t'a partagé.",
-  "pasteCode": "Coller « {code} »",
-  "@pasteCode": { "placeholders": { "code": { "type": "String" } } },
   "membersCount": "{count} membres",
-  "@membersCount": { "placeholders": { "count": { "type": "int" } } },
+  "@membersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "joinTribeButton": "Rejoindre la tribu",
-
   "doneTitle": "C'est parti, {name}",
-  "@doneTitle": { "placeholders": { "name": { "type": "String" } } },
+  "@doneTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "doneTagline": "Ta tribu est prête.\nÀ vous de jouer, une tâche à la fois.",
   "enterAppButton": "Entrer dans Our Tribe",
-
   "greeting": "Salut la tribu",
   "tasksDoneCount": "{done} sur {total} tâches faites",
-  "@tasksDoneCount": { "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } } },
+  "@tasksDoneCount": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "progressMessageStart": "En route, on y va",
   "progressMessageKeepGoing": "Belle lancée, continue",
   "progressMessageAlmost": "Plus que {count}, tu gères",
-  "@progressMessageAlmost": { "placeholders": { "count": { "type": "int" } } },
+  "@progressMessageAlmost": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "progressMessageAllDone": "Tout est fait — la tribu assure",
   "pointsLabel": "points",
   "plusPoints": "+{points}",
-  "@plusPoints": { "placeholders": { "points": { "type": "int" } } },
+  "@plusPoints": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
   "sectionMorning": "Ce matin",
   "sectionAfternoon": "Cet après-midi",
   "sectionEvening": "Ce soir",
   "sectionCount": "{done}/{total}",
-  "@sectionCount": { "placeholders": { "done": { "type": "int" }, "total": { "type": "int" } } },
-
+  "@sectionCount": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "tabHome": "Accueil",
   "tabWeek": "Semaine",
   "tabFamily": "Famille",
   "tabProfile": "Profil",
-
   "weekKicker": "Semaine {week} · {month}",
-  "@weekKicker": { "placeholders": { "week": { "type": "int" }, "month": { "type": "String" } } },
+  "@weekKicker": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
   "daySummary": "{count} tâches · {done} faites",
-  "@daySummary": { "placeholders": { "count": { "type": "int" }, "done": { "type": "int" } } },
+  "@daySummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "done": {
+        "type": "int"
+      }
+    }
+  },
   "pointsSuffix": "{points} pts",
-  "@pointsSuffix": { "placeholders": { "points": { "type": "int" } } },
+  "@pointsSuffix": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
   "nowLabel": "maintenant",
-
   "recapWeekShort": "Sem. {week}",
-  "@recapWeekShort": { "placeholders": { "week": { "type": "int" } } },
+  "@recapWeekShort": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
   "segmentSummary": "Résumé",
   "segmentTasks": "Tâches",
   "tribeTotal": "Total de la tribu",
@@ -101,12 +158,35 @@
   "youSuffix": "toi",
   "chiefSuffix": "chef",
   "memberTasksDone": "{count} tâches faites",
-  "@memberTasksDone": { "placeholders": { "count": { "type": "int" } } },
+  "@memberTasksDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "tribeGoal": "Objectif tribu · {name}",
-  "@tribeGoal": { "placeholders": { "name": { "type": "String" } } },
+  "@tribeGoal": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "rewardProgress": "{points} / {goal} pts — plus que {remaining} !",
-  "@rewardProgress": { "placeholders": { "points": { "type": "int" }, "goal": { "type": "int" }, "remaining": { "type": "int" } } },
-
+  "@rewardProgress": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
   "filterAll": "Toutes",
   "filterTodo": "À faire",
   "filterDone": "Faites",
@@ -114,10 +194,15 @@
   "groupTodo": "À faire",
   "groupDone": "Faites",
   "emptyListMessage": "Rien ici pour l'instant",
-
   "editButton": "Modifier",
   "todayAt": "Aujourd'hui · {time}",
-  "@todayAt": { "placeholders": { "time": { "type": "String" } } },
+  "@todayAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "todayLabel": "Aujourd'hui",
   "descriptionLabel": "Description",
   "defaultTaskDescription": "Tâche récurrente de la maison. Ajoute des détails ou une photo pour aider la personne qui s'en occupe.",
@@ -125,10 +210,18 @@
   "changeAction": "changer",
   "activityLabel": "Activité",
   "activityLastWeek": "Fait la semaine dernière par {name} · +{points}",
-  "@activityLastWeek": { "placeholders": { "name": { "type": "String" }, "points": { "type": "int" } } },
+  "@activityLastWeek": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "points": {
+        "type": "int"
+      }
+    }
+  },
   "markDoneButton": "Marquer comme fait",
   "undoDoneButton": "Fait ! Annuler",
-
   "attributionLabel": "Attribution",
   "assignPersonChip": "Une personne",
   "assignRotateChip": "À tour de rôle",
@@ -136,9 +229,14 @@
   "assignUnassignedHint": "La tâche ira dans « À répartir », chacun pourra la prendre.",
   "assignRotateHint": "À chaque fois, la tribu choisit qui s'en occupe.",
   "rotateBadge": "À tour de rôle",
-
   "unassignedBannerTitle": "{count, plural, one{1 tâche à répartir} other{{count} tâches à répartir}}",
-  "@unassignedBannerTitle": { "placeholders": { "count": { "type": "int" } } },
+  "@unassignedBannerTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "unassignedBannerSubtitle": "Personne n'est encore assigné · appuie pour répartir",
   "unassignedTitle": "À répartir",
   "unassignedSubtitle": "Ces tâches n'ont pas encore de responsable. Choisis qui s'en occupe.",
@@ -146,7 +244,6 @@
   "unassignedEmptyDetail": "Chaque tâche a son responsable.",
   "assignToLabel": "Attribuer à",
   "rotateWhoLabel": "Qui s'en occupe cette fois ?",
-
   "cancelButton": "Annuler",
   "newTaskTitle": "Nouvelle tâche",
   "taskNameLabel": "Nom de la tâche",
@@ -168,35 +265,60 @@
   "momentAfternoon": "Après-midi",
   "momentEvening": "Soir",
   "momentChip": "{label} · {time}",
-  "@momentChip": { "placeholders": { "label": { "type": "String" }, "time": { "type": "String" } } },
+  "@momentChip": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "photosLabel": "Photos",
   "addPhotoButton": "Ajouter",
   "createTaskButton": "Créer la tâche",
-
   "myAccountKicker": "Mon compte",
   "profileTitle": "Profil",
   "editProfileButton": "Éditer",
   "membersLabel": "Membres · {count}",
-  "@membersLabel": { "placeholders": { "count": { "type": "int" } } },
+  "@membersLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "manageAction": "Gérer",
   "chiefMembersHint": "Touche une pastille pour changer la couleur · glisse une ligne pour retirer un membre",
   "memberColorHint": "Touche ta pastille pour changer ta couleur — elle s'applique partout",
   "meSuffix": "moi",
   "removeMemberQuestion": "Retirer {name} de la tribu ?",
-  "@removeMemberQuestion": { "placeholders": { "name": { "type": "String" } } },
+  "@removeMemberQuestion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "removeAction": "Retirer",
   "leaveTribeButton": "Quitter la tribu",
   "leaveChiefWarning": "Tu es le chef de la tribu. Avant de partir, choisis qui prend le relais.",
   "newChiefTitle": "Nouveau chef de tribu",
   "nameAndLeaveButton": "Nommer & quitter",
   "leaveTribeQuestion": "Quitter {name} ?",
-  "@leaveTribeQuestion": { "placeholders": { "name": { "type": "String" } } },
+  "@leaveTribeQuestion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "leaveTribeDetail": "Tu ne verras plus ses tâches et ton score sera retiré du classement.",
   "deleteTribeQuestion": "Supprimer la tribu ?",
   "deleteTribeDetail": "Tu es le dernier membre. Quitter supprimera définitivement la tribu et ses tâches.",
   "deleteAction": "Supprimer",
   "leaveAction": "Quitter",
-
   "editProfileTitle": "Modifier le profil",
   "editProfileSubtitle": "Ton nom et ta couleur apparaissent partout dans la tribu.",
   "changePhotoButton": "Changer la photo",
@@ -204,32 +326,59 @@
   "myColorLabel": "Ma couleur",
   "securityLabel": "Sécurité",
   "changePasswordLabel": "Changer le mot de passe",
-
   "settingsLabel": "Paramètres",
   "notificationsLabel": "Notifications",
   "notificationsEnabled": "Activées",
   "remindersEntryLabel": "Récurrences",
   "rewardsEntryLabel": "Récompenses",
   "rewardsEntryDetail": "{count} objectifs",
-  "@rewardsEntryDetail": { "placeholders": { "count": { "type": "int" } } },
+  "@rewardsEntryDetail": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "helpLabel": "Aide",
   "logoutButton": "Se déconnecter",
   "versionLabel": "Our Tribe · v{version}",
-  "@versionLabel": { "placeholders": { "version": { "type": "String" } } },
-
+  "@versionLabel": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "rewardsTitle": "Récompenses",
   "rewardsSubtitle": "Des objectifs à débloquer avec les points. Zéro pression, que du fun.",
   "weeklyPotLabel": "Cagnotte de la semaine",
   "tribePointsLabel": "points tribu",
   "goalsLabel": "Objectifs · {count}",
-  "@goalsLabel": { "placeholders": { "count": { "type": "int" } } },
+  "@goalsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "tribeKind": "Tribu",
   "unlockedLabel": "Débloqué !",
   "rewardCardProgress": "{points} / {goal} pts · plus que {remaining}",
-  "@rewardCardProgress": { "placeholders": { "points": { "type": "int" }, "goal": { "type": "int" }, "remaining": { "type": "int" } } },
+  "@rewardCardProgress": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
   "addRewardButton": "Ajouter une récompense",
   "doneButton": "Terminé",
-
   "notificationsTitle": "Notifications",
   "notificationsSubtitle": "Choisis ce que la tribu reçoit, et quand.",
   "allowNotificationsLabel": "Autoriser les notifications",
@@ -242,7 +391,6 @@
   "doNotDisturbSection": "Ne pas déranger",
   "quietNightLabel": "Nuit calme",
   "quietNightDetail": "Aucune notif de 21:00 à 7:00",
-
   "remindersTitle": "Récurrences",
   "remindersSubtitle": "Comment les tâches répétitives et les points se renouvellent.",
   "recurrencesNote": "Les rappels et notifications se règlent dans « Notifications ».",
@@ -269,5 +417,22 @@
   "autoCarryLabel": "Reporter automatiquement",
   "autoCarryDetail": "Une tâche non faite passe au lendemain",
   "remindersNote": "Chaque tâche peut aussi avoir ses propres rappels, réglés à sa création.",
-  "saveButton": "Enregistrer"
+  "saveButton": "Enregistrer",
+  "copiedButton": "Copié !",
+  "inviteShareMessage": "Rejoins notre tribu sur Our Tribe avec le code {code} !",
+  "@inviteShareMessage": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "pasteFromClipboard": "Coller depuis le presse-papiers",
+  "joinCodeNotFound": "Aucune tribu ne correspond à ce code. Vérifie-le et réessaie.",
+  "authErrorEmailInUse": "Un compte existe déjà avec cet e-mail.",
+  "authErrorInvalidEmail": "Cette adresse e-mail n'est pas valide.",
+  "authErrorWeakPassword": "Le mot de passe est trop court (6 caractères minimum).",
+  "authErrorInvalidCredentials": "E-mail ou mot de passe incorrect.",
+  "authErrorNetwork": "Pas de connexion. Vérifie ton réseau et réessaie.",
+  "authErrorUnknown": "Une erreur est survenue. Réessaie dans un instant."
 }

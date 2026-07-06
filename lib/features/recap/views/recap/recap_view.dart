@@ -7,6 +7,7 @@ import 'package:our_tribe/features/recap/views/recap/widgets/recap_leaderboard.d
 import 'package:our_tribe/features/recap/views/recap/widgets/recap_reward_card.dart';
 import 'package:our_tribe/features/recap/views/recap/widgets/recap_total_card.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
+import 'package:our_tribe/services/task_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/widgets/segmented_control.dart';
 import 'package:our_tribe/shared/widgets/tribe_background.dart';
@@ -20,7 +21,10 @@ class RecapView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => RecapController(context.read<TribeService>()),
+      create: (context) => RecapController(
+        context.read<TribeService>(),
+        context.read<TaskService>(),
+      ),
       child: const _RecapBody(),
     );
   }

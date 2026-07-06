@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:our_tribe/features/settings/models/mock_rewards.dart';
-import 'package:our_tribe/features/tasks/models/mock_tasks.dart';
 import 'package:our_tribe/features/tasks/models/task.dart';
 import 'package:our_tribe/features/tasks/models/task_recurrence.dart';
+import 'package:our_tribe/services/task_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
+import 'package:our_tribe/shared/utils/error_reporter.dart';
 
 /// Sub-tabs of the recap screen.
 enum RecapSegment { summary, tasks }
@@ -11,15 +14,17 @@ enum RecapSegment { summary, tasks }
 /// Filters of the family task list sub-tab.
 enum TaskFilter { all, todo, done, recurring }
 
-/// State of the family recap screen. Mock data for now.
+/// State of the family recap screen, backed by the tribe and task services.
 class RecapController extends ChangeNotifier {
-  RecapController(this._tribeService, {List<Task>? tasks})
-    : _tasks = List.of(tasks ?? MockTasks.week);
+  RecapController(this._tribeService, this._taskService) {
+    _tribeService.addListener(notifyListeners);
+    _taskService.addListener(notifyListeners);
+  }
 
   final TribeService _tribeService;
-  final List<Task> _tasks;
+  final TaskService _taskService;
 
-  /// Weekly tribe goal (demo values).
+  /// Weekly tribe goal (demo values until rewards get a backend).
   static const int rewardGoal = MockRewards.tribeGoalPoints;
   static const String rewardName = MockRewards.tribeGoalName;
   static const int deltaVsLastWeek = 12;
@@ -30,7 +35,7 @@ class RecapController extends ChangeNotifier {
   TaskFilter _filter = TaskFilter.all;
   TaskFilter get filter => _filter;
 
-  List<Task> get tasks => List.unmodifiable(_tasks);
+  List<Task> get tasks => _taskService.tasks;
 
   int get totalPoints => _tribeService.weeklyTotalPoints;
 
@@ -45,18 +50,18 @@ class RecapController extends ChangeNotifier {
 
   List<Task> get filteredTasks => switch (_filter) {
     TaskFilter.all => tasks,
-    TaskFilter.todo => _tasks.where((t) => !t.isDone).toList(),
-    TaskFilter.done => _tasks.where((t) => t.isDone).toList(),
+    TaskFilter.todo => tasks.where((t) => !t.isDone).toList(),
+    TaskFilter.done => tasks.where((t) => t.isDone).toList(),
     TaskFilter.recurring =>
-      _tasks.where((t) => t.recurrence != TaskRecurrence.once).toList(),
+      tasks.where((t) => t.recurrence != TaskRecurrence.once).toList(),
   };
 
   int countFor(TaskFilter filter) => switch (filter) {
-    TaskFilter.all => _tasks.length,
-    TaskFilter.todo => _tasks.where((t) => !t.isDone).length,
-    TaskFilter.done => _tasks.where((t) => t.isDone).length,
+    TaskFilter.all => tasks.length,
+    TaskFilter.todo => tasks.where((t) => !t.isDone).length,
+    TaskFilter.done => tasks.where((t) => t.isDone).length,
     TaskFilter.recurring =>
-      _tasks.where((t) => t.recurrence != TaskRecurrence.once).length,
+      tasks.where((t) => t.recurrence != TaskRecurrence.once).length,
   };
 
   void selectSegment(RecapSegment value) {
@@ -70,9 +75,13 @@ class RecapController extends ChangeNotifier {
   }
 
   void toggleTask(String taskId) {
-    final index = _tasks.indexWhere((t) => t.id == taskId);
-    if (index == -1) return;
-    _tasks[index] = _tasks[index].copyWith(isDone: !_tasks[index].isDone);
-    notifyListeners();
+    unawaited(_taskService.toggleTask(taskId).onError(reportError));
+  }
+
+  @override
+  void dispose() {
+    _tribeService.removeListener(notifyListeners);
+    _taskService.removeListener(notifyListeners);
+    super.dispose();
   }
 }

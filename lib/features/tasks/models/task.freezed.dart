@@ -11,6 +11,7 @@ part of 'task.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$Task {
 
@@ -23,6 +24,8 @@ mixin _$Task {
 @pragma('vm:prefer-inline')
 $TaskCopyWith<Task> get copyWith => _$TaskCopyWithImpl<Task>(this as Task, _$identity);
 
+  /// Serializes this Task to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
@@ -30,7 +33,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is Task&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.moment, moment) || other.moment == moment)&&(identical(other.time, time) || other.time == time)&&(identical(other.points, points) || other.points == points)&&(identical(other.memberId, memberId) || other.memberId == memberId)&&(identical(other.recurrence, recurrence) || other.recurrence == recurrence)&&(identical(other.isRotating, isRotating) || other.isRotating == isRotating)&&(identical(other.isDone, isDone) || other.isDone == isDone)&&(identical(other.hasPhoto, hasPhoto) || other.hasPhoto == hasPhoto)&&(identical(other.description, description) || other.description == description));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,id,name,moment,time,points,memberId,recurrence,isRotating,isDone,hasPhoto,description);
 
@@ -215,11 +218,11 @@ return $default(_that.id,_that.name,_that.moment,_that.time,_that.points,_that.m
 }
 
 /// @nodoc
-
+@JsonSerializable()
 
 class _Task extends Task {
   const _Task({required this.id, required this.name, required this.moment, required this.time, required this.points, this.memberId, this.recurrence = TaskRecurrence.once, this.isRotating = false, this.isDone = false, this.hasPhoto = false, this.description}): super._();
-  
+  factory _Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
 
 @override final  String id;
 @override final  String name;
@@ -241,14 +244,17 @@ class _Task extends Task {
 @pragma('vm:prefer-inline')
 _$TaskCopyWith<_Task> get copyWith => __$TaskCopyWithImpl<_Task>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$TaskToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _Task&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.moment, moment) || other.moment == moment)&&(identical(other.time, time) || other.time == time)&&(identical(other.points, points) || other.points == points)&&(identical(other.memberId, memberId) || other.memberId == memberId)&&(identical(other.recurrence, recurrence) || other.recurrence == recurrence)&&(identical(other.isRotating, isRotating) || other.isRotating == isRotating)&&(identical(other.isDone, isDone) || other.isDone == isDone)&&(identical(other.hasPhoto, hasPhoto) || other.hasPhoto == hasPhoto)&&(identical(other.description, description) || other.description == description));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,id,name,moment,time,points,memberId,recurrence,isRotating,isDone,hasPhoto,description);
 

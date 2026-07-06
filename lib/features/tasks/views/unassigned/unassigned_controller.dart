@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:our_tribe/features/tasks/models/task.dart';
 import 'package:our_tribe/services/task_service.dart';
+import 'package:our_tribe/shared/utils/error_reporter.dart';
 
 /// State of the "up for grabs" screen, backed by [TaskService].
 class UnassignedController extends ChangeNotifier {
@@ -14,8 +17,9 @@ class UnassignedController extends ChangeNotifier {
 
   bool get isEmpty => tasks.isEmpty;
 
-  void assignTask(String taskId, String memberId) =>
-      _taskService.assignTask(taskId, memberId);
+  void assignTask(String taskId, String memberId) {
+    unawaited(_taskService.assignTask(taskId, memberId).onError(reportError));
+  }
 
   @override
   void dispose() {

@@ -8,10 +8,17 @@ enum Environment { dev, prod }
 /// Initialized once at startup via [AppConfig.init] (called by the
 /// `main_dev.dart` / `main_prod.dart` entry points).
 class AppConfig {
-  AppConfig._({required this.environment, required this.appName});
+  AppConfig._({
+    required this.environment,
+    required this.appName,
+    required this.sentryDsn,
+  });
 
   final Environment environment;
   final String appName;
+
+  /// Per-flavor Sentry DSN; an empty value disables error reporting.
+  final String sentryDsn;
 
   static AppConfig? _instance;
 
@@ -27,6 +34,11 @@ class AppConfig {
       appName: switch (environment) {
         Environment.dev => 'Our Tribe (DEV)',
         Environment.prod => 'Our Tribe',
+      },
+      // TODO(remy): fill in the per-project DSNs once created in Sentry.
+      sentryDsn: switch (environment) {
+        Environment.dev => '',
+        Environment.prod => '',
       },
     );
     if (kDebugMode) {

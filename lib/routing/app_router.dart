@@ -21,11 +21,51 @@ import 'package:our_tribe/features/tasks/views/unassigned/unassigned_view.dart';
 import 'package:our_tribe/features/week/views/week/week_view.dart';
 import 'package:our_tribe/routing/app_route.dart';
 import 'package:our_tribe/routing/app_shell.dart';
+import 'package:our_tribe/services/auth_service.dart';
 
-/// Central router. The app starts on the onboarding flow while there is no
-/// auth guard yet; a `redirect` based on the auth state will replace this.
-final GoRouter appRouter = GoRouter(
+/// Where the auth guard sends a user depending on their state.
+String? _authRedirect(AuthService authService, String location) {
+  // Don't move anyone before the initial auth state is known.
+  if (!authService.isReady) return null;
+
+  final isOnboarding = location.startsWith(AppRoute.onboardingWelcome.path);
+
+  if (!authService.isSignedIn) {
+    const preAuthPaths = [
+      AppRoute.onboardingWelcome,
+      AppRoute.onboardingSignup,
+      AppRoute.onboardingSignin,
+    ];
+    return preAuthPaths.any((r) => r.path == location)
+        ? null
+        : AppRoute.onboardingWelcome.path;
+  }
+
+  if (!authService.hasTribe) {
+    const noTribePaths = [
+      AppRoute.onboardingChoose,
+      AppRoute.onboardingCreateTribe,
+      AppRoute.onboardingJoin,
+    ];
+    return noTribePaths.any((r) => r.path == location)
+        ? null
+        : AppRoute.onboardingChoose.path;
+  }
+
+  // Signed in with a tribe: only the post-creation onboarding steps
+  // (invite code, welcome-done) remain reachable.
+  const postCreatePaths = [AppRoute.onboardingInvite, AppRoute.onboardingDone];
+  final isAllowedOnboarding = postCreatePaths.any((r) => r.path == location);
+  return isOnboarding && !isAllowedOnboarding ? AppRoute.home.path : null;
+}
+
+/// Builds the central router. The auth guard re-evaluates on every
+/// [AuthService] change (sign-in, sign-out, tribe joined or left).
+GoRouter createAppRouter(AuthService authService) => GoRouter(
   initialLocation: AppRoute.onboardingWelcome.path,
+  refreshListenable: authService,
+  redirect: (context, state) =>
+      _authRedirect(authService, state.matchedLocation),
   routes: [
     // Onboarding (pre-sign-in) flow.
     GoRoute(
@@ -46,32 +86,27 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: 'choose',
           name: AppRoute.onboardingChoose.name,
-          builder: (context, state) =>
-              ChooseTribeView(firstName: state.extra as String? ?? ''),
+          builder: (context, state) => const ChooseTribeView(),
         ),
         GoRoute(
           path: 'create',
           name: AppRoute.onboardingCreateTribe.name,
-          builder: (context, state) =>
-              CreateTribeView(firstName: state.extra as String? ?? ''),
+          builder: (context, state) => const CreateTribeView(),
         ),
         GoRoute(
           path: 'invite',
           name: AppRoute.onboardingInvite.name,
-          builder: (context, state) =>
-              InviteView(args: state.extra as InviteViewArgs?),
+          builder: (context, state) => const InviteView(),
         ),
         GoRoute(
           path: 'join',
           name: AppRoute.onboardingJoin.name,
-          builder: (context, state) =>
-              JoinTribeView(firstName: state.extra as String? ?? ''),
+          builder: (context, state) => const JoinTribeView(),
         ),
         GoRoute(
           path: 'done',
           name: AppRoute.onboardingDone.name,
-          builder: (context, state) =>
-              OnboardingDoneView(firstName: state.extra as String? ?? ''),
+          builder: (context, state) => const OnboardingDoneView(),
         ),
       ],
     ),

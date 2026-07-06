@@ -134,11 +134,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get joinSubtitle => 'Entre le code que ta tribu t\'a partagé.';
 
   @override
-  String pasteCode(String code) {
-    return 'Coller « $code »';
-  }
-
-  @override
   String membersCount(int count) {
     return '$count membres';
   }
@@ -748,4 +743,40 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get saveButton => 'Enregistrer';
+
+  @override
+  String get copiedButton => 'Copié !';
+
+  @override
+  String inviteShareMessage(String code) {
+    return 'Rejoins notre tribu sur Our Tribe avec le code $code !';
+  }
+
+  @override
+  String get pasteFromClipboard => 'Coller depuis le presse-papiers';
+
+  @override
+  String get joinCodeNotFound =>
+      'Aucune tribu ne correspond à ce code. Vérifie-le et réessaie.';
+
+  @override
+  String get authErrorEmailInUse => 'Un compte existe déjà avec cet e-mail.';
+
+  @override
+  String get authErrorInvalidEmail => 'Cette adresse e-mail n\'est pas valide.';
+
+  @override
+  String get authErrorWeakPassword =>
+      'Le mot de passe est trop court (6 caractères minimum).';
+
+  @override
+  String get authErrorInvalidCredentials => 'E-mail ou mot de passe incorrect.';
+
+  @override
+  String get authErrorNetwork =>
+      'Pas de connexion. Vérifie ton réseau et réessaie.';
+
+  @override
+  String get authErrorUnknown =>
+      'Une erreur est survenue. Réessaie dans un instant.';
 }

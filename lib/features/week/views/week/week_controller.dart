@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
-import 'package:our_tribe/features/tasks/models/mock_tasks.dart';
 import 'package:our_tribe/features/tasks/models/task.dart';
+import 'package:our_tribe/services/task_service.dart';
+import 'package:our_tribe/shared/utils/error_reporter.dart';
 
 /// One cell of the 7-day strip.
 @immutable
@@ -11,56 +14,71 @@ class WeekDay {
   final int taskCount;
 }
 
-/// State of the week screen: day strip + timeline of the selected day.
-/// Mock data for now; the day strip is built around the current date.
+/// State of the week screen: day strip + timeline of the selected day,
+/// backed by [TaskService].
+///
+/// Tasks carry no date yet, so every day shows the tribe's current task
+/// list; per-day planning will come with a scheduling model.
 class WeekController extends ChangeNotifier {
-  WeekController({DateTime? today, List<Task>? tasks})
-    : _today = today ?? DateTime.now(),
-      _tasks = List.of(tasks ?? MockTasks.week) {
-    _selectedDate = _dateOnly(_today);
+  WeekController(this._taskService, {DateTime? now})
+    : _now = now ?? DateTime.now() {
+    _selectedDate = _dateOnly(_now);
+    _taskService.addListener(notifyListeners);
   }
 
-  /// Demo task counts shown as dots under each day (Mon → Sun).
-  static const List<int> _demoDayCounts = [2, 6, 3, 4, 2, 1, 0];
-
-  /// The timeline "now" marker sits after this task (demo).
-  static const String nowAfterTaskId = 'w2';
-
-  final DateTime _today;
-  final List<Task> _tasks;
+  final TaskService _taskService;
+  final DateTime _now;
   late DateTime _selectedDate;
 
-  DateTime get today => _today;
+  DateTime get today => _dateOnly(_now);
   DateTime get selectedDate => _selectedDate;
 
-  List<Task> get tasks => List.unmodifiable(_tasks);
+  bool get isTodaySelected => _selectedDate == today;
+
+  /// Timeline tasks, ordered by their time of day.
+  List<Task> get tasks =>
+      [..._taskService.tasks]
+        ..sort((a, b) => _timeMinutes(a.time).compareTo(_timeMinutes(b.time)));
 
   /// Monday-to-Sunday strip of the current week.
   List<WeekDay> get days {
-    final monday = _dateOnly(
-      _today.subtract(Duration(days: _today.weekday - 1)),
-    );
+    final monday = _dateOnly(_now.subtract(Duration(days: _now.weekday - 1)));
     return [
       for (var i = 0; i < 7; i++)
         WeekDay(
           date: monday.add(Duration(days: i)),
-          taskCount: _demoDayCounts[i],
+          taskCount: _taskService.tasks.length,
         ),
     ];
   }
 
   /// ISO-like week number, good enough for display.
   int get weekNumber {
-    final firstDayOfYear = DateTime(_today.year);
-    return ((_today.difference(firstDayOfYear).inDays +
-                firstDayOfYear.weekday) /
+    final firstDayOfYear = DateTime(_now.year);
+    return ((_now.difference(firstDayOfYear).inDays + firstDayOfYear.weekday) /
             7)
         .ceil();
   }
 
-  int get doneCount => _tasks.where((t) => t.isDone).length;
+  int get doneCount => tasks.where((t) => t.isDone).length;
 
-  int get dayPoints => _tasks.fold(0, (sum, t) => sum + t.points);
+  int get dayPoints => tasks.fold(0, (sum, t) => sum + t.points);
+
+  /// "HH:mm" label of the "now" marker row.
+  String get nowTimeLabel =>
+      '${_now.hour}:${_now.minute.toString().padLeft(2, '0')}';
+
+  /// Id of the task after which the "now" marker sits, or null when the
+  /// marker is hidden (day other than today, or before the first task).
+  String? get nowAfterTaskId {
+    if (!isTodaySelected) return null;
+    final nowMinutes = _now.hour * 60 + _now.minute;
+    Task? lastPast;
+    for (final task in tasks) {
+      if (_timeMinutes(task.time) <= nowMinutes) lastPast = task;
+    }
+    return lastPast?.id;
+  }
 
   void selectDay(DateTime date) {
     _selectedDate = _dateOnly(date);
@@ -68,12 +86,25 @@ class WeekController extends ChangeNotifier {
   }
 
   void toggleTask(String taskId) {
-    final index = _tasks.indexWhere((t) => t.id == taskId);
-    if (index == -1) return;
-    _tasks[index] = _tasks[index].copyWith(isDone: !_tasks[index].isDone);
-    notifyListeners();
+    unawaited(_taskService.toggleTask(taskId).onError(reportError));
   }
 
   static DateTime _dateOnly(DateTime date) =>
       DateTime(date.year, date.month, date.day);
+
+  /// Parses "8:00" / "19:30" to minutes since midnight; unparsable times
+  /// sort first.
+  static int _timeMinutes(String time) {
+    final parts = time.split(':');
+    if (parts.length != 2) return 0;
+    final hours = int.tryParse(parts[0]) ?? 0;
+    final minutes = int.tryParse(parts[1]) ?? 0;
+    return hours * 60 + minutes;
+  }
+
+  @override
+  void dispose() {
+    _taskService.removeListener(notifyListeners);
+    super.dispose();
+  }
 }

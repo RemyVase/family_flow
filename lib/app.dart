@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:our_tribe/config/app_environment.dart';
+import 'package:our_tribe/features/auth/repositories/auth_repository.dart';
+import 'package:our_tribe/features/auth/repositories/firebase_auth_repository.dart';
+import 'package:our_tribe/features/auth/repositories/firestore_user_repository.dart';
+import 'package:our_tribe/features/auth/repositories/user_repository.dart';
+import 'package:our_tribe/features/tasks/repositories/firestore_task_repository.dart';
+import 'package:our_tribe/features/tasks/repositories/task_repository.dart';
+import 'package:our_tribe/features/tribe/repositories/firestore_tribe_repository.dart';
+import 'package:our_tribe/features/tribe/repositories/tribe_repository.dart';
+import 'package:our_tribe/firebase/firebase_services.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/routing/app_router.dart';
+import 'package:our_tribe/services/auth_service.dart';
 import 'package:our_tribe/services/task_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/widgets/dev_banner.dart';
@@ -13,30 +24,79 @@ class OurTribeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return MultiProvider(
+      // The single place where concrete backends are named — everything
+      // else depends on the interfaces (dependency-injection rule).
+      providers: [
+        Provider<AuthRepository>(
+          create: (_) => FirebaseAuthRepository(FirebaseServices.auth),
+        ),
+        Provider<UserRepository>(
+          create: (_) => FirestoreUserRepository(FirebaseServices.firestore),
+        ),
+        Provider<TribeRepository>(
+          create: (_) => FirestoreTribeRepository(FirebaseServices.firestore),
+        ),
+        Provider<TaskRepository>(
+          create: (_) => FirestoreTaskRepository(FirebaseServices.firestore),
+        ),
+        ChangeNotifierProvider<AuthService>(
+          create: (c) =>
+              AuthService(c.read<AuthRepository>(), c.read<UserRepository>()),
+        ),
+        ChangeNotifierProvider<TribeService>(
+          create: (c) =>
+              TribeService(c.read<TribeRepository>(), c.read<AuthService>()),
+        ),
+        ChangeNotifierProvider<TaskService>(
+          create: (c) => TaskService(
+            c.read<TaskRepository>(),
+            c.read<TribeService>(),
+            c.read<AuthService>(),
+          ),
+        ),
+      ],
+      child: const _OurTribeMaterialApp(),
+    );
+  }
+}
+
+/// Owns the router, which is created once with the [AuthService] so the
+/// auth guard can listen to it.
+class _OurTribeMaterialApp extends StatefulWidget {
+  const _OurTribeMaterialApp();
+
+  @override
+  State<_OurTribeMaterialApp> createState() => _OurTribeMaterialAppState();
+}
+
+class _OurTribeMaterialAppState extends State<_OurTribeMaterialApp> {
+  late final GoRouter _router = createAppRouter(context.read<AuthService>());
+
+  @override
+  void dispose() {
+    _router.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final config = AppConfig.instance;
 
-    return MultiProvider(
-      providers: [
-        // Cross-feature services. Repositories will be bound to their
-        // interfaces here once the backend is wired.
-        ChangeNotifierProvider<TribeService>(create: (_) => TribeService()),
-        ChangeNotifierProvider<TaskService>(create: (_) => TaskService()),
-      ],
-      child: MaterialApp.router(
-        title: config.appName,
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.light(),
-        routerConfig: appRouter,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        // The dev strip is added here so it stays visible on every screen.
-        builder: (context, child) {
-          return DevBanner(
-            enabled: config.isDev,
-            child: child ?? const SizedBox.shrink(),
-          );
-        },
-      ),
+    return MaterialApp.router(
+      title: config.appName,
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light(),
+      routerConfig: _router,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      // The dev strip is added here so it stays visible on every screen.
+      builder: (context, child) {
+        return DevBanner(
+          enabled: config.isDev,
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   }
 }

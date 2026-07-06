@@ -2,12 +2,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:our_tribe/features/task_create/views/task_create/task_create_controller.dart';
 import 'package:our_tribe/features/tasks/models/task_moment.dart';
 import 'package:our_tribe/features/tasks/models/task_recurrence.dart';
-import 'package:our_tribe/services/task_service.dart';
+
+import '../../../../helpers/test_stack.dart';
 
 void main() {
+  Future<(TaskCreateController, TestStack)> buildController() async {
+    final stack = await TestStack.signedInWithTribe();
+    return (TaskCreateController(stack.taskService, stack.tribeService), stack);
+  }
+
   group('TaskCreateController', () {
-    test('should not allow creation while the name is empty', () {
-      final controller = TaskCreateController(TaskService());
+    test('should default the assignee to the signed-in member', () async {
+      final (controller, _) = await buildController();
+
+      expect(controller.memberId, 'lea');
+    });
+
+    test('should not allow creation while the name is empty', () async {
+      final (controller, _) = await buildController();
 
       expect(controller.canCreate, isFalse);
 
@@ -18,8 +30,8 @@ void main() {
       expect(controller.canCreate, isTrue);
     });
 
-    test('should clamp points between min and max', () {
-      final controller = TaskCreateController(TaskService());
+    test('should clamp points between min and max', () async {
+      final (controller, _) = await buildController();
 
       controller.decrementPoints();
       expect(controller.points, TaskCreateController.minPoints);
@@ -32,8 +44,8 @@ void main() {
       expect(controller.canIncrementPoints, isFalse);
     });
 
-    test('should update selections and notify listeners', () {
-      final controller = TaskCreateController(TaskService());
+    test('should update selections and notify listeners', () async {
+      final (controller, _) = await buildController();
       var notifications = 0;
       controller.addListener(() => notifications++);
 
@@ -46,47 +58,57 @@ void main() {
       expect(controller.moment, TaskMoment.morning);
       expect(notifications, 3);
     });
-    test('should fall back to one person when rotate loses its recurrence', () {
-      final controller = TaskCreateController(TaskService());
 
-      controller.selectRecurrence(TaskRecurrence.daily);
-      controller.selectAssignment(TaskAssignment.rotate);
-      expect(controller.assignment, TaskAssignment.rotate);
+    test(
+      'should fall back to one person when rotate loses its recurrence',
+      () async {
+        final (controller, _) = await buildController();
 
-      controller.selectRecurrence(TaskRecurrence.once);
-      expect(controller.assignment, TaskAssignment.person);
-    });
+        controller.selectRecurrence(TaskRecurrence.daily);
+        controller.selectAssignment(TaskAssignment.rotate);
+        expect(controller.assignment, TaskAssignment.rotate);
 
-    test('should create an assigned task in the shared store', () {
-      final service = TaskService(tasks: const []);
-      final controller = TaskCreateController(service);
+        controller.selectRecurrence(TaskRecurrence.once);
+        expect(controller.assignment, TaskAssignment.person);
+      },
+    );
+
+    test('should create an assigned task in the shared store', () async {
+      final (controller, stack) = await buildController();
 
       controller.setName('Sortir les poubelles');
       controller.selectMember('tom');
 
-      expect(controller.createTask(), isTrue);
-      expect(service.tasks.single.memberId, 'tom');
-      expect(service.tasks.single.isRotating, isFalse);
+      expect(await controller.createTask(), isTrue);
+      await pumpEventQueue();
+
+      expect(stack.taskService.tasks.single.memberId, 'tom');
+      expect(stack.taskService.tasks.single.isRotating, isFalse);
     });
 
-    test('should create an unassigned task when up for grabs is chosen', () {
-      final service = TaskService(tasks: const []);
-      final controller = TaskCreateController(service);
+    test(
+      'should create an unassigned task when up for grabs is chosen',
+      () async {
+        final (controller, stack) = await buildController();
 
-      controller.setName('Lessive');
-      controller.selectAssignment(TaskAssignment.unassigned);
+        controller.setName('Lessive');
+        controller.selectAssignment(TaskAssignment.unassigned);
 
-      expect(controller.createTask(), isTrue);
-      expect(service.tasks.single.memberId, isNull);
-      expect(service.unassignedTasks.length, 1);
-    });
+        expect(await controller.createTask(), isTrue);
+        await pumpEventQueue();
 
-    test('should refuse to create a task without a name', () {
-      final service = TaskService(tasks: const []);
-      final controller = TaskCreateController(service);
+        expect(stack.taskService.tasks.single.memberId, isNull);
+        expect(stack.taskService.unassignedTasks.length, 1);
+      },
+    );
 
-      expect(controller.createTask(), isFalse);
-      expect(service.tasks, isEmpty);
+    test('should refuse to create a task without a name', () async {
+      final (controller, stack) = await buildController();
+
+      expect(await controller.createTask(), isFalse);
+      await pumpEventQueue();
+
+      expect(stack.taskService.tasks, isEmpty);
     });
   });
 }

@@ -6,6 +6,7 @@ import 'package:our_tribe/features/task_detail/views/task_detail/widgets/task_de
 import 'package:our_tribe/features/task_detail/views/task_detail/widgets/task_detail_header.dart';
 import 'package:our_tribe/features/tasks/models/task.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
+import 'package:our_tribe/services/task_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/icons/app_icon.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
@@ -30,7 +31,8 @@ class TaskDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => TaskDetailController(task),
+      create: (context) =>
+          TaskDetailController(context.read<TaskService>(), task),
       child: const _TaskDetailBody(),
     );
   }

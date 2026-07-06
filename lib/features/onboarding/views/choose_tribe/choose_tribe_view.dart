@@ -9,10 +9,7 @@ import 'package:our_tribe/shared/widgets/screen_header.dart';
 
 /// "Your tribe" step: create a tribe or join with a code.
 class ChooseTribeView extends StatelessWidget {
-  const ChooseTribeView({super.key, required this.firstName});
-
-  /// Carried through the flow to greet the user on the done step.
-  final String firstName;
+  const ChooseTribeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,17 +25,13 @@ class ChooseTribeView extends StatelessWidget {
             title: l10n.createTribeChoice,
             detail: l10n.createTribeChoiceDetail,
             isAccented: true,
-            onTap: () => context.push(
-              AppRoute.onboardingCreateTribe.path,
-              extra: firstName,
-            ),
+            onTap: () => context.push(AppRoute.onboardingCreateTribe.path),
           ),
           ChoiceCard(
             icon: AppIconData.key,
             title: l10n.joinChoice,
             detail: l10n.joinChoiceDetail,
-            onTap: () =>
-                context.push(AppRoute.onboardingJoin.path, extra: firstName),
+            onTap: () => context.push(AppRoute.onboardingJoin.path),
           ),
         ],
       ),

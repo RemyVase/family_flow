@@ -4,6 +4,7 @@ import 'package:our_tribe/features/week/views/week/widgets/week_day_strip.dart';
 import 'package:our_tribe/features/week/views/week/widgets/week_day_summary.dart';
 import 'package:our_tribe/features/week/views/week/widgets/week_header.dart';
 import 'package:our_tribe/features/week/views/week/widgets/week_timeline.dart';
+import 'package:our_tribe/services/task_service.dart';
 import 'package:our_tribe/shared/widgets/tribe_background.dart';
 import 'package:our_tribe/theme/app_spacing.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,7 @@ class WeekView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => WeekController(),
+      create: (context) => WeekController(context.read<TaskService>()),
       child: const _WeekBody(),
     );
   }

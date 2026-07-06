@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:our_tribe/features/profile/views/profile/profile_controller.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
-import 'package:our_tribe/routing/app_route.dart';
 import 'package:our_tribe/shared/icons/app_icon.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
 import 'package:our_tribe/theme/app_colors.dart';
 import 'package:our_tribe/theme/app_radii.dart';
 import 'package:our_tribe/theme/app_spacing.dart';
 import 'package:our_tribe/theme/app_text_styles.dart';
+import 'package:provider/provider.dart';
 
-/// Sign-out button (`.pf-logout`). Returns to onboarding for now.
+/// Sign-out button (`.pf-logout`); the auth guard returns to onboarding.
 class ProfileLogoutButton extends StatelessWidget {
   const ProfileLogoutButton({super.key});
 
@@ -18,7 +18,7 @@ class ProfileLogoutButton extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return GestureDetector(
-      onTap: () => context.go(AppRoute.onboardingWelcome.path),
+      onTap: () => context.read<ProfileController>().signOut(),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 13),

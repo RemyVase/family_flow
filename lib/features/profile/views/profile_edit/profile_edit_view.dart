@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:our_tribe/features/profile/views/profile_edit/profile_edit_controller.dart';
-import 'package:our_tribe/features/tribe/models/mock_members.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
+import 'package:our_tribe/services/auth_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/icons/app_icon.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
@@ -28,7 +28,10 @@ class ProfileEditView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => ProfileEditController(context.read<TribeService>()),
+      create: (context) => ProfileEditController(
+        context.read<TribeService>(),
+        context.read<AuthService>(),
+      ),
       child: const _ProfileEditBody(),
     );
   }
@@ -52,8 +55,13 @@ class _ProfileEditBodyState extends State<_ProfileEditBody> {
       text: context.read<ProfileEditController>().name,
     );
     _emailController = TextEditingController(
-      text: MockMembers.currentUserEmail,
+      text: context.read<ProfileEditController>().email,
     );
+  }
+
+  Future<void> _save() async {
+    final saved = await context.read<ProfileEditController>().save();
+    if (saved && mounted) context.pop();
   }
 
   @override
@@ -131,10 +139,7 @@ class _ProfileEditBodyState extends State<_ProfileEditBody> {
                 child: PrimaryButton(
                   label: l10n.saveButton,
                   trailingIcon: AppIconData.check,
-                  onPressed: () {
-                    controller.save();
-                    context.pop();
-                  },
+                  onPressed: _save,
                 ),
               ),
             ),

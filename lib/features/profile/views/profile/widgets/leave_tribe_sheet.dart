@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:our_tribe/features/profile/views/profile/profile_controller.dart';
 import 'package:our_tribe/features/profile/views/profile/widgets/profile_member_row.dart';
 import 'package:our_tribe/features/tribe/models/member.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
-import 'package:our_tribe/routing/app_route.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/icons/app_icon.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
@@ -14,13 +14,19 @@ import 'package:our_tribe/theme/app_spacing.dart';
 import 'package:our_tribe/theme/app_text_styles.dart';
 import 'package:provider/provider.dart';
 
-/// Opens the "leave the tribe" bottom sheet (`.pf-sheet`).
+/// Opens the "leave the tribe" bottom sheet (`.pf-sheet`). The sheet lives
+/// outside the profile view's subtree, so its [ProfileController] is handed
+/// over explicitly.
 Future<void> showLeaveTribeSheet(BuildContext context) {
+  final controller = context.read<ProfileController>();
   return showModalBottomSheet<void>(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (_) => const LeaveTribeSheet(),
+    builder: (_) => ChangeNotifierProvider.value(
+      value: controller,
+      child: const LeaveTribeSheet(),
+    ),
   );
 }
 
@@ -35,6 +41,18 @@ class LeaveTribeSheet extends StatefulWidget {
 
 class _LeaveTribeSheetState extends State<LeaveTribeSheet> {
   String? _newChiefId;
+  bool _isLeaving = false;
+
+  Future<void> _leave() async {
+    setState(() => _isLeaving = true);
+    final left = await context.read<ProfileController>().leaveTribe(
+      newChiefId: _newChiefId,
+    );
+    if (!mounted) return;
+    setState(() => _isLeaving = false);
+    // The router's auth guard returns to onboarding once the tribe is gone.
+    if (left) context.pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +63,7 @@ class _LeaveTribeSheetState extends State<LeaveTribeSheet> {
 
     final isSoloChief = currentMember.isChief && others.isEmpty;
     final needsNewChief = currentMember.isChief && others.isNotEmpty;
-    final canLeave = !needsNewChief || _newChiefId != null;
+    final canLeave = !_isLeaving && (!needsNewChief || _newChiefId != null);
 
     final bottomInset = MediaQuery.of(context).padding.bottom;
 
@@ -125,10 +143,7 @@ class _LeaveTribeSheetState extends State<LeaveTribeSheet> {
                       ? l10n.nameAndLeaveButton
                       : (isSoloChief ? l10n.deleteAction : l10n.leaveAction),
                   isDestructive: true,
-                  // Leaving is design-only: back to onboarding.
-                  onTap: canLeave
-                      ? () => context.go(AppRoute.onboardingWelcome.path)
-                      : null,
+                  onTap: canLeave ? _leave : null,
                 ),
               ),
             ],

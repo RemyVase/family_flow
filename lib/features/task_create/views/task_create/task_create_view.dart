@@ -9,6 +9,7 @@ import 'package:our_tribe/features/task_create/views/task_create/widgets/task_cr
 import 'package:our_tribe/features/task_create/views/task_create/widgets/task_create_recurrence_chips.dart';
 import 'package:our_tribe/l10n/app_localizations.dart';
 import 'package:our_tribe/services/task_service.dart';
+import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/icons/app_icon_data.dart';
 import 'package:our_tribe/shared/widgets/app_text_field.dart';
 import 'package:our_tribe/shared/widgets/primary_button.dart';
@@ -26,7 +27,10 @@ class TaskCreateView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => TaskCreateController(context.read<TaskService>()),
+      create: (context) => TaskCreateController(
+        context.read<TaskService>(),
+        context.read<TribeService>(),
+      ),
       child: const _TaskCreateBody(),
     );
   }
@@ -34,6 +38,11 @@ class TaskCreateView extends StatelessWidget {
 
 class _TaskCreateBody extends StatelessWidget {
   const _TaskCreateBody();
+
+  Future<void> _create(BuildContext context) async {
+    final created = await context.read<TaskCreateController>().createTask();
+    if (created && context.mounted) context.pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,9 +119,7 @@ class _TaskCreateBody extends StatelessWidget {
                   label: l10n.createTaskButton,
                   leadingIcon: AppIconData.plus,
                   onPressed: controller.canCreate
-                      ? () {
-                          if (controller.createTask()) context.pop();
-                        }
+                      ? () => _create(context)
                       : null,
                 ),
               ),

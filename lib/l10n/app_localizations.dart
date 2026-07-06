@@ -338,12 +338,6 @@ abstract class AppLocalizations {
   /// **'Entre le code que ta tribu t\'a partagé.'**
   String get joinSubtitle;
 
-  /// No description provided for @pasteCode.
-  ///
-  /// In fr, this message translates to:
-  /// **'Coller « {code} »'**
-  String pasteCode(String code);
-
   /// No description provided for @membersCount.
   ///
   /// In fr, this message translates to:
@@ -1423,6 +1417,66 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Enregistrer'**
   String get saveButton;
+
+  /// No description provided for @copiedButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Copié !'**
+  String get copiedButton;
+
+  /// No description provided for @inviteShareMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rejoins notre tribu sur Our Tribe avec le code {code} !'**
+  String inviteShareMessage(String code);
+
+  /// No description provided for @pasteFromClipboard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Coller depuis le presse-papiers'**
+  String get pasteFromClipboard;
+
+  /// No description provided for @joinCodeNotFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune tribu ne correspond à ce code. Vérifie-le et réessaie.'**
+  String get joinCodeNotFound;
+
+  /// No description provided for @authErrorEmailInUse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Un compte existe déjà avec cet e-mail.'**
+  String get authErrorEmailInUse;
+
+  /// No description provided for @authErrorInvalidEmail.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette adresse e-mail n\'est pas valide.'**
+  String get authErrorInvalidEmail;
+
+  /// No description provided for @authErrorWeakPassword.
+  ///
+  /// In fr, this message translates to:
+  /// **'Le mot de passe est trop court (6 caractères minimum).'**
+  String get authErrorWeakPassword;
+
+  /// No description provided for @authErrorInvalidCredentials.
+  ///
+  /// In fr, this message translates to:
+  /// **'E-mail ou mot de passe incorrect.'**
+  String get authErrorInvalidCredentials;
+
+  /// No description provided for @authErrorNetwork.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pas de connexion. Vérifie ton réseau et réessaie.'**
+  String get authErrorNetwork;
+
+  /// No description provided for @authErrorUnknown.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une erreur est survenue. Réessaie dans un instant.'**
+  String get authErrorUnknown;
 }
 
 class _AppLocalizationsDelegate

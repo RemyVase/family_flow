@@ -3,14 +3,17 @@ import 'package:our_tribe/features/tasks/models/task.dart';
 import 'package:our_tribe/features/tasks/models/task_moment.dart';
 import 'package:our_tribe/features/tasks/models/task_recurrence.dart';
 import 'package:our_tribe/services/task_service.dart';
+import 'package:our_tribe/services/tribe_service.dart';
+import 'package:our_tribe/shared/utils/error_reporter.dart';
 import 'package:our_tribe/shared/utils/task_moment_style.dart';
 
 /// How the new task gets its owner.
 enum TaskAssignment { person, rotate, unassigned }
 
-/// State of the "new task" form. Creation feeds [TaskService] (mock store).
+/// State of the "new task" form; creation goes through [TaskService].
 class TaskCreateController extends ChangeNotifier {
-  TaskCreateController(this._taskService);
+  TaskCreateController(this._taskService, TribeService tribeService)
+    : _memberId = tribeService.currentMember.id;
 
   static const int minPoints = 1;
   static const int maxPoints = 9;
@@ -25,7 +28,7 @@ class TaskCreateController extends ChangeNotifier {
 
   TaskAssignment _assignment = TaskAssignment.person;
 
-  String _memberId = 'lea';
+  String _memberId;
   String get memberId => _memberId;
 
   int _points = 2;
@@ -37,6 +40,12 @@ class TaskCreateController extends ChangeNotifier {
   TaskMoment _moment = TaskMoment.evening;
   TaskMoment get moment => _moment;
 
+  bool _isSubmitting = false;
+  bool get isSubmitting => _isSubmitting;
+
+  bool _hasError = false;
+  bool get hasError => _hasError;
+
   bool get isRecurring => _recurrence != TaskRecurrence.once;
 
   /// "Taking turns" only makes sense for a recurring task; fall back to
@@ -46,7 +55,7 @@ class TaskCreateController extends ChangeNotifier {
       ? TaskAssignment.person
       : _assignment;
 
-  bool get canCreate => _name.trim().isNotEmpty;
+  bool get canCreate => !_isSubmitting && _name.trim().isNotEmpty;
   bool get canDecrementPoints => _points > minPoints;
   bool get canIncrementPoints => _points < maxPoints;
 
@@ -92,23 +101,37 @@ class TaskCreateController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Adds the task to the shared store; returns false when invalid.
-  bool createTask() {
+  /// Creates the task in the shared store; returns false when invalid or
+  /// on error.
+  Future<bool> createTask() async {
     if (!canCreate) return false;
+    _isSubmitting = true;
+    _hasError = false;
+    notifyListeners();
     final trimmedDescription = _description.trim();
-    _taskService.addTask(
-      Task(
-        id: 'n${DateTime.now().microsecondsSinceEpoch}',
-        name: _name.trim(),
-        description: trimmedDescription.isEmpty ? null : trimmedDescription,
-        moment: _moment,
-        time: _moment.defaultTime,
-        points: _points,
-        recurrence: _recurrence,
-        memberId: assignment == TaskAssignment.person ? _memberId : null,
-        isRotating: assignment == TaskAssignment.rotate,
-      ),
-    );
-    return true;
+    try {
+      await _taskService.addTask(
+        Task(
+          // The backend assigns the real id on creation.
+          id: '',
+          name: _name.trim(),
+          description: trimmedDescription.isEmpty ? null : trimmedDescription,
+          moment: _moment,
+          time: _moment.defaultTime,
+          points: _points,
+          recurrence: _recurrence,
+          memberId: assignment == TaskAssignment.person ? _memberId : null,
+          isRotating: assignment == TaskAssignment.rotate,
+        ),
+      );
+      return true;
+    } catch (e, st) {
+      _hasError = true;
+      await reportError(e, st);
+      return false;
+    } finally {
+      _isSubmitting = false;
+      notifyListeners();
+    }
   }
 }
