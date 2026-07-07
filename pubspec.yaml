@@ -49,6 +49,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   firebase_messaging: ^16.4.1
+  firebase_analytics: ^12.4.3
 
 dev_dependencies:
   flutter_test:

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:our_tribe/features/tasks/models/task.dart';
 import 'package:our_tribe/features/tasks/repositories/task_repository.dart';
+import 'package:our_tribe/services/analytics_service.dart';
 import 'package:our_tribe/services/auth_service.dart';
 import 'package:our_tribe/services/tribe_service.dart';
 import 'package:our_tribe/shared/utils/error_reporter.dart';
@@ -14,7 +15,12 @@ import 'package:our_tribe/shared/utils/error_reporter.dart';
 /// also feeds the member's weekly counters (via [TribeService]), which is
 /// why this orchestration lives in a cross-feature service.
 class TaskService extends ChangeNotifier {
-  TaskService(this._taskRepository, this._tribeService, this._authService) {
+  TaskService(
+    this._taskRepository,
+    this._tribeService,
+    this._authService,
+    this._analytics,
+  ) {
     _authService.addListener(_onAuthChanged);
     _onAuthChanged();
   }
@@ -22,6 +28,7 @@ class TaskService extends ChangeNotifier {
   final TaskRepository _taskRepository;
   final TribeService _tribeService;
   final AuthService _authService;
+  final AnalyticsService _analytics;
 
   String? _tribeId;
   List<Task> _tasks = const [];
@@ -59,6 +66,11 @@ class TaskService extends ChangeNotifier {
     _tasks = [..._tasks];
     _tasks[index] = toggled;
     notifyListeners();
+    if (toggled.isDone) {
+      _analytics.logTaskCompleted(points: toggled.points);
+    } else {
+      _analytics.logTaskUnchecked(points: toggled.points);
+    }
     await _taskRepository.saveTask(_tribeId!, toggled);
     final memberId = toggled.memberId;
     if (memberId != null) {
@@ -73,13 +85,24 @@ class TaskService extends ChangeNotifier {
   Future<void> assignTask(String taskId, String memberId) {
     final task = taskById(taskId);
     if (task == null) return Future.value();
+    _analytics.logTaskAssigned();
     return _taskRepository.saveTask(
       _tribeId!,
       task.copyWith(memberId: memberId),
     );
   }
 
-  Future<void> addTask(Task task) => _taskRepository.addTask(_tribeId!, task);
+  Future<void> addTask(Task task) {
+    _analytics.logTaskCreated(
+      assignment: task.isRotating
+          ? 'rotate'
+          : (task.isUnassigned ? 'unassigned' : 'person'),
+      points: task.points,
+      recurrence: task.recurrence.name,
+      moment: task.moment.name,
+    );
+    return _taskRepository.addTask(_tribeId!, task);
+  }
 
   @override
   void dispose() {

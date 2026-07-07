@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:our_tribe/features/analytics/models/analytics_event.dart';
+import 'package:our_tribe/features/analytics/repositories/analytics_repository.dart';
 import 'package:our_tribe/features/auth/models/app_user.dart';
 import 'package:our_tribe/features/auth/models/auth_exception.dart';
 import 'package:our_tribe/features/auth/repositories/auth_repository.dart';
@@ -14,6 +16,7 @@ import 'package:our_tribe/features/tasks/repositories/firestore_task_repository.
 import 'package:our_tribe/features/tribe/models/member.dart';
 import 'package:our_tribe/features/tribe/models/tribe.dart';
 import 'package:our_tribe/features/tribe/repositories/firestore_tribe_repository.dart';
+import 'package:our_tribe/services/analytics_service.dart';
 import 'package:our_tribe/services/auth_service.dart';
 import 'package:our_tribe/services/notification_service.dart';
 import 'package:our_tribe/services/task_service.dart';
@@ -74,6 +77,43 @@ class FakeAuthRepository implements AuthRepository {
     if (error == null) return;
     nextError = null;
     throw error;
+  }
+}
+
+/// Recorded analytics call, for assertions.
+typedef RecordedEvent = ({AnalyticsEvent event, Map<String, Object>? params});
+
+/// In-memory [AnalyticsRepository] recording everything it receives.
+class FakeAnalyticsRepository implements AnalyticsRepository {
+  final List<RecordedEvent> events = [];
+  final List<String> screenViews = [];
+  final Map<String, String?> userProperties = {};
+  String? userId;
+
+  /// Names of the recorded events, in order.
+  List<AnalyticsEvent> get eventNames => [for (final e in events) e.event];
+
+  @override
+  Future<void> logEvent(
+    AnalyticsEvent event, [
+    Map<String, Object>? parameters,
+  ]) async {
+    events.add((event: event, params: parameters));
+  }
+
+  @override
+  Future<void> logScreenView(String screenName) async {
+    screenViews.add(screenName);
+  }
+
+  @override
+  Future<void> setUserId(String? userId) async {
+    this.userId = userId;
+  }
+
+  @override
+  Future<void> setUserProperty(String name, String? value) async {
+    userProperties[name] = value;
   }
 }
 
@@ -141,18 +181,26 @@ class TestStack {
     tribeRepository = FirestoreTribeRepository(this.firestore);
     taskRepository = FirestoreTaskRepository(this.firestore);
     prefsRepository = FirestoreNotificationPrefsRepository(this.firestore);
-    authService = AuthService(authRepository, userRepository);
+    analyticsService = AnalyticsService(analyticsRepository);
+    authService = AuthService(authRepository, userRepository, analyticsService);
     tribeService = TribeService(
       tribeRepository,
       authService,
+      analyticsService,
       random: Random(7),
     );
-    taskService = TaskService(taskRepository, tribeService, authService);
+    taskService = TaskService(
+      taskRepository,
+      tribeService,
+      authService,
+      analyticsService,
+    );
     notificationService = NotificationService(
       pushRepository,
       prefsRepository,
       userRepository,
       authService,
+      analyticsService,
     );
   }
 
@@ -160,6 +208,8 @@ class TestStack {
   final FakeAuthRepository authRepository;
   final FakePushMessagingRepository pushRepository =
       FakePushMessagingRepository();
+  final FakeAnalyticsRepository analyticsRepository = FakeAnalyticsRepository();
+  late final AnalyticsService analyticsService;
   late final FirestoreUserRepository userRepository;
   late final FirestoreTribeRepository tribeRepository;
   late final FirestoreTaskRepository taskRepository;

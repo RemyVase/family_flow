@@ -4,12 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:our_tribe/features/auth/models/app_user.dart';
 import 'package:our_tribe/features/auth/repositories/auth_repository.dart';
 import 'package:our_tribe/features/auth/repositories/user_repository.dart';
+import 'package:our_tribe/services/analytics_service.dart';
 import 'package:our_tribe/shared/utils/error_reporter.dart';
 
 /// App-wide authentication state: who is signed in and which tribe they
 /// belong to. Drives the router's redirect (onboarding vs. the app).
 class AuthService extends ChangeNotifier {
-  AuthService(this._authRepository, this._userRepository) {
+  AuthService(this._authRepository, this._userRepository, this._analytics) {
     _authSub = _authRepository.watchUserId().listen(
       _onAuthChanged,
       onError: reportError,
@@ -18,6 +19,7 @@ class AuthService extends ChangeNotifier {
 
   final AuthRepository _authRepository;
   final UserRepository _userRepository;
+  final AnalyticsService _analytics;
 
   StreamSubscription<String?>? _authSub;
   StreamSubscription<AppUser?>? _userSub;
@@ -43,6 +45,7 @@ class AuthService extends ChangeNotifier {
 
   void _onAuthChanged(String? userId) {
     _userId = userId;
+    _analytics.setUser(userId);
     _userSub?.cancel();
     _userSub = null;
     _user = null;
@@ -71,12 +74,18 @@ class AuthService extends ChangeNotifier {
     await _userRepository.saveUser(
       AppUser(id: userId, firstName: firstName.trim(), email: trimmedEmail),
     );
+    _analytics.logSignUp();
   }
 
-  Future<void> signIn({required String email, required String password}) =>
-      _authRepository.signIn(email: email.trim(), password: password);
+  Future<void> signIn({required String email, required String password}) async {
+    await _authRepository.signIn(email: email.trim(), password: password);
+    _analytics.logLogin();
+  }
 
-  Future<void> signOut() => _authRepository.signOut();
+  Future<void> signOut() async {
+    _analytics.logLogout();
+    await _authRepository.signOut();
+  }
 
   /// Records the tribe the user belongs to (null when leaving it).
   Future<void> setTribeId(String? tribeId) {

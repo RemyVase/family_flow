@@ -7,6 +7,7 @@ import 'package:our_tribe/features/tribe/models/member.dart';
 import 'package:our_tribe/features/tribe/models/tribe.dart';
 import 'package:our_tribe/features/tribe/models/tribe_invite.dart';
 import 'package:our_tribe/features/tribe/repositories/tribe_repository.dart';
+import 'package:our_tribe/services/analytics_service.dart';
 import 'package:our_tribe/services/auth_service.dart';
 import 'package:our_tribe/shared/utils/error_reporter.dart';
 import 'package:our_tribe/theme/app_colors.dart';
@@ -17,8 +18,12 @@ import 'package:our_tribe/theme/app_colors.dart';
 /// Member colors are the visual signature of the tribe and are read by
 /// almost every screen, which is why this lives in a cross-feature service.
 class TribeService extends ChangeNotifier {
-  TribeService(this._tribeRepository, this._authService, {Random? random})
-    : _random = random ?? Random() {
+  TribeService(
+    this._tribeRepository,
+    this._authService,
+    this._analytics, {
+    Random? random,
+  }) : _random = random ?? Random() {
     _authService.addListener(_onAuthChanged);
     _onAuthChanged();
   }
@@ -30,6 +35,7 @@ class TribeService extends ChangeNotifier {
 
   final TribeRepository _tribeRepository;
   final AuthService _authService;
+  final AnalyticsService _analytics;
   final Random _random;
 
   String? _tribeId;
@@ -81,6 +87,13 @@ class TribeService extends ChangeNotifier {
           for (final member in members)
             member.copyWith(isCurrentUser: member.id == _authService.userId),
         ];
+        final me = _members.where((m) => m.isCurrentUser).firstOrNull;
+        if (me != null) {
+          _analytics.setTribeContext(
+            isChief: me.isChief,
+            memberCount: _members.length,
+          );
+        }
         notifyListeners();
       }, onError: reportError);
     }
@@ -111,6 +124,7 @@ class TribeService extends ChangeNotifier {
       ),
     );
     await _authService.setTribeId(tribeId);
+    _analytics.logTribeCreated();
   }
 
   /// Resolves an invite code; null when it does not exist.
@@ -132,6 +146,7 @@ class TribeService extends ChangeNotifier {
       ),
     );
     await _authService.setTribeId(invite.tribeId);
+    _analytics.logTribeJoined();
     // Best-effort denormalization; the join itself already succeeded.
     await _tribeRepository.updateInviteMemberCount(
       invite.id,
@@ -145,7 +160,8 @@ class TribeService extends ChangeNotifier {
     final tribe = _tribe;
     final me = currentMember;
     if (tribe == null) return;
-    if (_members.length == 1) {
+    final isLastMember = _members.length == 1;
+    if (isLastMember) {
       await _tribeRepository.deleteTribe(tribe: tribe, memberId: me.id);
     } else {
       if (me.isChief && newChiefId != null) {
@@ -161,6 +177,7 @@ class TribeService extends ChangeNotifier {
       );
     }
     await _authService.setTribeId(null);
+    _analytics.logTribeLeft(tribeDeleted: isLastMember);
   }
 
   /// Changes a member's signature color (chief-only action in the UI).
@@ -170,6 +187,7 @@ class TribeService extends ChangeNotifier {
     _members = [..._members];
     _members[index] = _members[index].copyWith(color: color);
     notifyListeners();
+    _analytics.logMemberColorChanged();
     return _tribeRepository.saveMember(_tribeId!, _members[index]);
   }
 
@@ -177,6 +195,7 @@ class TribeService extends ChangeNotifier {
   Future<void> removeMember(String memberId) {
     final member = _members.where((m) => m.id == memberId).firstOrNull;
     if (member == null || member.isCurrentUser) return Future.value();
+    _analytics.logMemberRemoved();
     return _tribeRepository.removeMember(_tribeId!, memberId);
   }
 
@@ -184,6 +203,7 @@ class TribeService extends ChangeNotifier {
   Future<void> renameCurrentMember(String name) {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return Future.value();
+    _analytics.logMemberRenamed();
     return _tribeRepository.saveMember(
       _tribeId!,
       currentMember.copyWith(name: trimmed),

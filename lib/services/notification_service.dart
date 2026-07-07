@@ -5,6 +5,7 @@ import 'package:our_tribe/features/auth/repositories/user_repository.dart';
 import 'package:our_tribe/features/notifications/models/notification_prefs.dart';
 import 'package:our_tribe/features/notifications/repositories/notification_prefs_repository.dart';
 import 'package:our_tribe/features/notifications/repositories/push_messaging_repository.dart';
+import 'package:our_tribe/services/analytics_service.dart';
 import 'package:our_tribe/services/auth_service.dart';
 import 'package:our_tribe/shared/utils/error_reporter.dart';
 
@@ -20,6 +21,7 @@ class NotificationService extends ChangeNotifier {
     this._prefsRepository,
     this._userRepository,
     this._authService,
+    this._analytics,
   ) {
     _authService.addListener(_onAuthChanged);
     _onAuthChanged();
@@ -29,6 +31,7 @@ class NotificationService extends ChangeNotifier {
   final NotificationPrefsRepository _prefsRepository;
   final UserRepository _userRepository;
   final AuthService _authService;
+  final AnalyticsService _analytics;
 
   String? _userId;
   String? _token;
@@ -106,6 +109,9 @@ class NotificationService extends ChangeNotifier {
     if (userId == null) return false;
     _permissionStatus = await _messagingRepository.requestPermission();
     notifyListeners();
+    _analytics.logNotificationPermission(
+      granted: _permissionStatus == PushPermissionStatus.granted,
+    );
     if (_permissionStatus != PushPermissionStatus.granted) return false;
     await _registerToken(userId);
     return true;
@@ -117,6 +123,7 @@ class NotificationService extends ChangeNotifier {
     if (userId == null) return Future.value();
     _prefs = prefs;
     notifyListeners();
+    _analytics.logNotificationPrefsSaved(enabled: prefs.masterEnabled);
     return _prefsRepository.savePrefs(userId, prefs);
   }
 
